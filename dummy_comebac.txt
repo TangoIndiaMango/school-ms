@@ -1,0 +1,172 @@
+    def create(self, request, *args, **kwargs):
+        # upload file
+        if "faculty_file" in request.FILES:
+            file = request.FILES["faculty_file"]
+            decoded_file = file.read().decode("utf-8")
+            reader = csv.DictReader(io.StringIO(decoded_file))
+
+            rows = []
+            errors = []
+            for row in reader:
+
+                dean = row.get("dean", None)
+                dean = Faculty.objects.filter(dean__lecturer__first_name=dean).first()
+                if not dean:
+                    errors.append(
+                        f"Department head '{dean}' not found. Please create the department head and then upload again."
+                    )
+                    continue
+
+                row["dean"] = dean.id
+
+                serializer = self.serializer_class(data=row)
+                if serializer.is_valid():
+                    rows.append(Department(**serializer.validated_data))
+                else:
+                    errors.append(serializer.errors)
+
+            if errors:
+                return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                Faculty.objects.bulk_create(rows)
+                return Response(
+                    {
+                        "data": f"{Faculty._meta.verbose_name_plural}'s created successfully."
+                    },
+                    status=status.HTTP_201_CREATED,
+                )
+        else:
+            # Single creation
+            dean = request.data.get("dean", None)
+            _dean = Faculty.objects.filter(dean__lecturer__user__first_name=dean)
+            # we need to filter through the Faculty to get the dean name and compare how do we do this in a OnetoOneModel?
+            
+            if not _dean:
+                return Response(
+                    {
+                        "error": f"Department dean '{dean}' not found. Please create the department dean and then retry."
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            request.data["dean"] = _dean.id
+
+            serializer = self.serializer_class(data=request.data)
+            if serializer.is_valid(raise_exception=True):
+                self.perform_create(serializer)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+def create(self, request):
+    if "department_file" in request.FILES:
+        # Bulk creation from CSV file
+        file = request.FILES["department_file"]
+        decoded_file = file.read().decode("utf-8")
+        reader = csv.DictReader(io.StringIO(decoded_file))
+
+        rows = []
+        errors = []
+        for row in reader:
+            faculty_name = row.get("faculty", None)
+            faculty = Faculty.objects.filter(name=faculty_name).first()
+            if not faculty:
+                errors.append(
+                    f"Faculty '{faculty_name}' not found. Please create the faculty and then upload again."
+                )
+                continue
+
+            head_of_dept = row.get("department_head", None)
+            department_head = Department.objects.filter(name=head_of_dept).first()
+            if not department_head:
+                errors.append(
+                    f"Department head '{head_of_dept}' not found. Please create the department head and then upload again."
+                )
+                continue
+
+            row["department_head"] = department_head.id
+            row["faculty"] = faculty.id
+
+            serializer = self.serializer_class(data=row)
+            if serializer.is_valid():
+                rows.append(Department(**serializer.validated_data))
+            else:
+                errors.append(serializer.errors)
+
+        if errors:
+            return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            Department.objects.bulk_create(rows)
+            return Response(
+                {
+                    "data": f"{Department._meta.verbose_name_plural}'s created successfully."
+                },
+                status=status.HTTP_201_CREATED,
+            )
+    else:
+        # Single creation
+        faculty_name = request.data.get("faculty", None)
+        _faculty = Faculty.objects.filter(name=faculty_name).first()
+        if not _faculty:
+            return Response(
+                {
+                    "error": f"Faculty '{faculty_name}' not found. Please create the faculty and then retry."
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        head_of_dept = request.data.get("department_head", None)
+        department_head = Faculty.objects.filter(name=head_of_dept).first()
+        if not department_head:
+            return Response(
+                {
+                    "error": f"Department head '{head_of_dept}' not found. Please create the department head and then retry."
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        request.data["department_head"] = department_head.id
+        request.data["faculty"] = _faculty.id
+
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            self.perform_create(serializer)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @transaction.atomic()
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.serializer_class(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.update(serializer)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @transaction.atomic()
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+    # try:
+    #     # Create a user and get the created user
+    #     user = create_user(request_data)
+
+    #     department_name = request_data.get("department", None)
+    #     _department, error = match_dept_name(department_name)
+
+    #     # Check if there was an error
+    #     if error is not None:
+    #         return Response(error, status=status.HTTP_400_BAD_REQUEST)
+
+    #     role_data = {"department": _department, "user": user}
+
+    #     if role_field_name in request_data:
+    #         role_data[role_field_name] = request_data[role_field_name]
+
+    #     # Use create to create and save the role instance
+    #     role_instance = role_model.objects.create(**role_data)
+    #     serialized = role_serializer(role_instance)
+
+    #     return serialized, None
+    # except Exception as e:
+    #     return None, Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

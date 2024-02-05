@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  postgres:
+    container_name: schoolms-postgres
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: schoolms_user
+      POSTGRES_PASSWORD: schoolms_user
+      POSTGRES_DB: schoolms
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - schoolms-network
+    restart: unless-stopped  
+      
+networks:
+  schoolms-network:
+   driver: bridge
+
