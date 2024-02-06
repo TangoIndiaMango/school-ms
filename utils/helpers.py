@@ -2,8 +2,8 @@ import csv
 import io
 from rest_framework import status
 from rest_framework.response import Response
-
-from school_administration.models import Department, Faculty
+from django.db.models.functions import Lower
+from school_administration.models import Department, Faculty, Level
 
 
 def match_dept_name(department_name):
@@ -66,11 +66,158 @@ def match_dept_name(department_name):
 #         }
 
 
+# def create_data_from_csv(file, serializer_class, Model, unique_fields):
+#     decoded_file = file.read().decode("utf-8")
+#     reader = csv.DictReader(io.StringIO(decoded_file))
+
+#     # Create a set for each unique field
+#     existing_unique_fields = {
+#         field: set(Model.objects.values_list(field, flat=True))
+#         for field in unique_fields
+#     }
+
+#     rows = []
+#     errors = []
+#     for row in reader:
+#         department_name = row.get("department", None)
+#         if department_name:
+#             department, error = match_dept_name(department_name)
+#             if error is not None:
+#                 errors.append(error)
+#                 continue
+#             row["department"] = department.id if department else None
+
+#         serializer = serializer_class(data=row)
+#         if serializer.is_valid():
+#             record_data = serializer.validated_data
+
+#             # Check for uniqueness for each unique field
+#             duplicate_fields = [
+#                 field
+#                 for field in unique_fields
+#                 if record_data[field] in existing_unique_fields[field]
+#             ]
+
+#             if not duplicate_fields:
+#                 for field in unique_fields:
+#                     existing_unique_fields[field].add(record_data[field])
+#                 rows.append(Model(**record_data))
+#             else:
+#                 error_message = {
+#                     field: f"Duplicate value for {field}: {record_data[field]}"
+#                     for field in duplicate_fields
+#                 }
+#                 errors.append({"duplicate_error": error_message, "data": record_data})
+#         else:
+#             errors.append(serializer.errors)
+
+#     if rows:
+#         Model.objects.bulk_create(rows)
+#         return {
+#             "data": f"{len(rows)} {Model._meta.verbose_name_plural} created successfully.",
+#             "errors": errors,
+#         }
+#     else:
+#         return {
+#             "data": "No data to create.",
+#             "errors": errors,
+#         }
+
+
+# from django.db import transaction
+
+
+# def bulk_insert(records, Model):
+#     try:
+#         with transaction.atomic():
+#             Model.objects.bulk_create(records, ignore_conflict=True)
+#     except Exception as e:
+#         raise Exception(f"An error occurred while creating records: {e}")
+
+
+# from django.db.models.functions import Lower
+
+
+# def create_data_new(file, serializer_class, Model, unique_fields):
+#     decoded_file = file.read().decode("utf-8")
+#     reader = csv.DictReader(io.StringIO(decoded_file))
+
+#     faculties = Faculty.objects.annotate(lower_name=Lower("name")).values_list(
+#         "lower_name", "id"
+#     )
+
+#     faculty_dict = {name: faculty_id for name, faculty_id in faculties}
+
+#     # load exisiting records into a set
+#     existing_unique_fields = {
+#         field: set(Model.objects.values_list(field, flat=True))
+#         for field in unique_fields
+#     }
+
+#     rows = []
+#     errors = []
+#     for row in reader:
+#         faculty_name = row.get("faculty", None).lower()
+#         record_name = row.get("name", None)
+
+#         row["faculty"] = faculty_dict.get(faculty_name, None)
+#         if not row["faculty"]:
+#             errors.append(
+#                 f"Faculty '{faculty_name}' not found for record '{record_name}'."
+#             )
+#             continue
+
+#         serializer = serializer_class(data=row)
+#         if serializer.is_valid():
+#             record_data = serializer.validated_data
+
+#             # Check for uniqueness for each unique field
+#             duplicate_fields = [
+#                 field
+#                 for field in unique_fields
+#                 if record_data[field] in existing_unique_fields[field]
+#             ]
+#             if not duplicate_fields:
+#                 for field in unique_fields:
+#                     existing_unique_fields[field].add(record_data[field])
+#                 rows.append(Model(**record_data))
+#             else:
+#                 error_message = {
+#                     field: f"Duplicate value for {field}: {record_data[field]}"
+#                     for field in duplicate_fields
+#                 }
+#                 errors.append({"duplicate_error": error_message, "data": record_data})
+
+#         else:
+#             errors.append(serializer.errors)
+
+#     if rows:
+#         Model.objects.bulk_create(rows, ignore_conflict=True)
+#         return {
+#             "data": f"{len(rows)} {Model._meta.verbose_name_plural} created successfully.",
+#             "errors": errors,
+#         }
+
+#     else:
+#         return {
+#             "data": "No data to create.",
+#             "errors": errors,
+#         }
+
+
 def create_data_from_csv(file, serializer_class, Model, unique_fields):
     decoded_file = file.read().decode("utf-8")
     reader = csv.DictReader(io.StringIO(decoded_file))
 
-    # Create a set for each unique field
+    faculties = Faculty.objects.annotate(lower_name=Lower("name")).values_list(
+        "lower_name", "id"
+    )
+
+    faculty_dict = {name: faculty_id for name, faculty_id in faculties}
+    # level = {level.name: level.id for level in Level.objects.all()}
+
+
+    # load existing records into a set
     existing_unique_fields = {
         field: set(Model.objects.values_list(field, flat=True))
         for field in unique_fields
@@ -79,13 +226,25 @@ def create_data_from_csv(file, serializer_class, Model, unique_fields):
     rows = []
     errors = []
     for row in reader:
-        department_name = row.get("department", None)
-        if department_name:
-            department, error = match_dept_name(department_name)
-            if error is not None:
-                errors.append(error)
+        if "department" in row:
+            department_name = row.get("department", None)
+            if department_name:
+                department, error = match_dept_name(department_name)
+                if error is not None:
+                    errors.append(error)
+                    continue
+                row["department"] = department.id if department else None
+
+        if "faculty" in row:
+            faculty_name = row.get("faculty", None).lower()
+            record_name = row.get("name", None)
+
+            row["faculty"] = faculty_dict.get(faculty_name, None)
+            if not row["faculty"]:
+                errors.append(
+                    f"Faculty '{faculty_name}' not found for record '{record_name}'."
+                )
                 continue
-            row["department"] = department.id if department else None
 
         serializer = serializer_class(data=row)
         if serializer.is_valid():
@@ -97,7 +256,6 @@ def create_data_from_csv(file, serializer_class, Model, unique_fields):
                 for field in unique_fields
                 if record_data[field] in existing_unique_fields[field]
             ]
-
             if not duplicate_fields:
                 for field in unique_fields:
                     existing_unique_fields[field].add(record_data[field])
@@ -112,7 +270,7 @@ def create_data_from_csv(file, serializer_class, Model, unique_fields):
             errors.append(serializer.errors)
 
     if rows:
-        Model.objects.bulk_create(rows)
+        Model.objects.bulk_create(rows, ignore_conflicts=True)
         return {
             "data": f"{len(rows)} {Model._meta.verbose_name_plural} created successfully.",
             "errors": errors,
@@ -124,81 +282,60 @@ def create_data_from_csv(file, serializer_class, Model, unique_fields):
         }
 
 
-from django.db import transaction
 
+# def create_dept_from_csv(file, serializer_class, Model, unique_fields):
+#     # Read and parse the CSV file
+#     decoded_file = file.read().decode("utf-8")
+#     reader = csv.DictReader(io.StringIO(decoded_file))
 
-def bulk_insert(records, Model):
-    try:
-        with transaction.atomic():
-            Model.objects.bulk_create(records, ignore_conflict=True)
-    except Exception as e:
-        raise Exception(f"An error occurred while creating records: {e}")
+#     # Create a dictionary to map faculty names to Faculty objects
+#     faculty_name_to_obj = {faculty.name: faculty for faculty in Faculty.objects.all()}
+    
+#     existing_unique_fields = {
+#         field: set(Model.objects.values_list(field, flat=True))
+#         for field in unique_fields
+#     }
 
+#     # Process each row in the CSV file
+#     rows = []
+#     errors = []
+#     for row in reader:
+#         # Extract department data from the row
+#         department_data = {
+#             'name': row['name'],
+#             'short_name': row['short_name'],
+#             'program_duration': row.get('program_duration'),
+#             'qualification': row.get('qualification'),
+#             'faculty_name': row['faculty']
+#         }
 
-from django.db.models.functions import Lower
+#         # Check if the faculty name exists in the faculty_name_to_obj dictionary
+#         faculty_name = department_data['faculty_name']
+#         if faculty_name in faculty_name_to_obj:
+#             department_data['faculty'] = faculty_name_to_obj[faculty_name]
+#         else:
+#             errors.append(f"Faculty '{faculty_name}' not found for department '{department_data['name']}'")
 
+#         # Create a serializer instance for the department data
+#         serializer = serializer_class(data=department_data)
+#         if serializer.is_valid():
+#             rows.append(serializer.validated_data)
+#         else:
+#             # Append errors to the errors list
+#             errors.append(serializer.errors)
 
-def create_data_new(file, serializer_class, Model, unique_fields, batch_size=1000):
-    decoded_file = file.read().decode("utf-8")
-    reader = csv.DictReader(io.StringIO(decoded_file))
-
-    faculties = Faculty.objects.annotate(lower_name=Lower("name")).values_list(
-        "lower_name", "id"
-    )
-    print(faculties)
-    faculty_dict = {name: faculty_id for name, faculty_id in faculties}
-
-    # load exisiting records into a set
-    existing_unique_fields = {
-        field: set(Model.objects.values_list(field, flat=True))
-        for field in unique_fields
-    }
-
-    rows = []
-    errors = []
-    for row in reader:
-        faculty_name = row.get("faculty", None).lower()
-        record_name = row.get("department_name", None)
-
-        row["faculty"] = faculty_dict.get(faculty_name, None)
-        if not row["faculty"]:
-            errors.append(
-                f"Faculty '{faculty_name}' not found for record '{record_name}'."
-            )
-            continue
-
-        serializer = serializer_class(data=row)
-        if serializer.is_valid():
-            record_data = serializer.validated_data
-
-            # Check for uniqueness for each unique field
-            duplicate_fields = [
-                field
-                for field in unique_fields
-                if record_data[field] in existing_unique_fields[field]
-            ]
-            if not duplicate_fields:
-                for field in unique_fields:
-                    existing_unique_fields[field].add(record_data[field])
-                rows.append(Model(**record_data))
-            else:
-                error_message = {
-                    field: f"Duplicate value for {field}: {record_data[field]}"
-                    for field in duplicate_fields
-                }
-                errors.append({"duplicate_error": error_message, "data": record_data})
-
-            if len(rows) >= batch_size:
-                bulk_insert(rows, Model)
-                rows.clear()
-
-        else:
-            errors.append(serializer.errors)
-
-    if rows:
-        bulk_insert(rows, Model)
-
-    return errors
+#     # Bulk create departments if there are valid rows
+#     if rows:
+#         Model.objects.bulk_create([Model(**data) for data in rows])
+#         return {
+#             "data": f"{len(rows)} {Model._meta.verbose_name_plural} created successfully.",
+#             "errors": errors,
+#         }
+#     else:
+#         return {
+#             "data": "No data to create.",
+#             "errors": errors,
+#         }
 
 
 import random

@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework.viewsets import ModelViewSet
 from courses.models import CourseRegistration
+from courses.utils import create_courses_from_csv
 from schoolms.authentication_middleware import IsAuthenticatedCustom
 from rest_framework.response import Response
 from rest_framework import status
@@ -29,7 +30,10 @@ class CreateCourseView(ModelViewSet):
         # in the csv file
         if "course_file" in request.FILES:
             file = request.FILES["course_file"]
-            result = create_data_from_csv(file, self.serializer_class, Course)
+            unique_fields = ["course_code"]
+            result = create_courses_from_csv(
+                file, self.serializer_class, Course, unique_fields
+            )
 
             if result:
                 return Response(result, status=status.HTTP_200_OK)
@@ -115,3 +119,6 @@ class RegisterCourseView(ModelViewSet):
             {"message": f"{instance.name} deleted"},
             status=status.HTTP_200_OK,
         )
+
+
+# class AssignCourseToLecturer

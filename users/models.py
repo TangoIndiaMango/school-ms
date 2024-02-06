@@ -18,6 +18,11 @@ ROLE_CHOICES = (
     ("admin", "Admin"),
 )
 
+GENDER_CHOICES = (
+    ("male", "Male"),
+    ("female", "Female")
+)
+
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password, **extra_fields):
@@ -56,7 +61,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_superuser = models.BooleanField(default=False)
     is_verified = models.BooleanField(default=False)
     phone = models.CharField(max_length=60, blank=True, null=True)
-    address = models.CharField(max_length=150, blank=True, null=True)
+    residential_address = models.CharField(max_length=150, blank=True, null=True)
+    home_address = models.CharField(max_length=150, blank=True, null=True)
+    date_of_birth = models.DateField(blank=True, null=True)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     role = models.CharField(max_length=30, choices=ROLE_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

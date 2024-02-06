@@ -12,3 +12,4 @@ class CourseRegistarionSerializer(serializers.ModelSerializer):
     class Meta:
         model = CourseRegistration
         fields = "__all__"
+        

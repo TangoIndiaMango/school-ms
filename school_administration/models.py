@@ -29,9 +29,6 @@ class Faculty(models.Model):
 class Department(models.Model):
     name = models.CharField(max_length=100, unique=True)
     short_name = models.CharField(max_length=20, unique=True)
-    lecturers = models.ManyToManyField("users.Lecturer")
-    students = models.ManyToManyField("users.Student")
-    courses = models.ManyToManyField("courses.Course")
     department_head = models.OneToOneField(
         "users.Lecturer",
         on_delete=models.SET_NULL,
@@ -41,6 +38,14 @@ class Department(models.Model):
     faculty = models.ForeignKey(
         Faculty, on_delete=models.CASCADE, related_name="departments"
     )
+    level = models.ForeignKey(
+        "school_administration.Level",
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="departments_level",
+    )
+    program_duration = models.CharField(max_length=50, null=True)
+    qualification = models.CharField(max_length=50, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -57,11 +62,12 @@ class Department(models.Model):
 
 
 class Level(models.Model):
-    name = models.CharField(max_length=20, unique=True)
-    level_courses = models.ManyToManyField("courses.Course")
-    students = models.ManyToManyField("users.Student")
-    level_department = models.ForeignKey(
-        Department, on_delete=models.CASCADE, related_name="levels"
+    level = models.CharField(max_length=20, unique=True)
+    staff_advisor_level = models.ForeignKey(
+        "users.Lecturer",
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="staff_advisor_level",
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
