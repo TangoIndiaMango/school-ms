@@ -8,9 +8,11 @@ media
 
 #data from docker compose up
 data
+fozy_data
 
 # text files with my dunny code
 dummy_comebac.txt
+zaptest.py
 
 # Backup files # 
 *.bak 

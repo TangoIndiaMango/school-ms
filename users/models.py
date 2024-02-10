@@ -18,10 +18,7 @@ ROLE_CHOICES = (
     ("admin", "Admin"),
 )
 
-GENDER_CHOICES = (
-    ("male", "Male"),
-    ("female", "Female")
-)
+GENDER_CHOICES = (("male", "Male"), ("female", "Female"))
 
 
 class CustomUserManager(BaseUserManager):
@@ -66,6 +63,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     date_of_birth = models.DateField(blank=True, null=True)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     role = models.CharField(max_length=30, choices=ROLE_CHOICES)
+    nationality = models.CharField(max_length=150, blank=True, null=True)
+    religion = models.CharField(max_length=150, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -109,7 +108,21 @@ class Student(models.Model):
         CustomUser, on_delete=models.CASCADE, related_name="student"
     )
     matric_no = models.CharField(max_length=50, unique=True)
-    courses = models.ManyToManyField("courses.Course")
+    courses = models.ManyToManyField("courses.Course", blank=True, related_name="student")
+    student_dept = models.ForeignKey(
+        "school_administration.Department",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="department",
+    )
+    level = models.ForeignKey(
+        "school_administration.Level",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="student_level",
+    )
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name} - {self.matric_no}"
@@ -121,30 +134,28 @@ class Lecturer(models.Model):
     )
     staff_id = models.CharField(max_length=50, unique=True)
     designation = models.CharField(max_length=30, blank=True, null=True)
-    courses = models.ManyToManyField("courses.Course")
+    qualification = models.CharField(max_length=30, blank=True, null=True)
+    courses = models.ForeignKey("courses.Course", blank=True, related_name="lecturer", on_delete=models.SET_NULL, null=True)
+    level = models.ForeignKey(
+        "school_administration.Level",
+        null=True, 
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="lecturer_level",
+    )
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name} - {self.staff_id}"
 
 
-class DepartmentHead(models.Model):
+class Designation(models.Model):
+    name = models.CharField(max_length=100)
     lecturer = models.OneToOneField(
         Lecturer, on_delete=models.CASCADE, related_name="dep_head"
     )
-    department = models.OneToOneField(
-        Department, on_delete=models.CASCADE, related_name="dep_head"
-    )
-
+    
     def __str__(self):
-        return f"{self.user.first_name} {self.user.last_name} - {self.department.name}"
-
-
-# class Dean(models.Model):
-#     lecturer = models.OneToOneField(Lecturer, on_delete=models.CASCADE, related_name='dep_head')
-#     department = models.OneToOneField(Department, on_delete=models.CASCADE, related_name="dep_head")
-
-#     def __str__(self):
-#         return f"{self.user.first_name} {self.user.last_name} - {self.department.name}"
+        return f"{self.name} - {self.lecturer.user.first_name}"
 
 
 class VerificationUser(models.Model):

@@ -4,7 +4,7 @@ from rest_framework.viewsets import ModelViewSet
 from school_administration.models import Department, Faculty, Level
 from schoolms.authentication_middleware import IsAuthenticatedCustom
 from users.user_permissions import IsAdminUser
-from utils.helpers import create_data_from_csv
+from .helpers import ProcessFaculty, ProcessDepartments
 from .serializers import DepartmentSerializer, FacultySerializer, LevelSerializer
 from django.db import transaction
 from rest_framework.response import Response
@@ -27,15 +27,9 @@ class CreateFacultyView(ModelViewSet):
         # upload file
         if "faculty_file" in request.FILES:
             file = request.FILES["faculty_file"]
-            unique_fields = ["name", "short_name"]
-            result = create_data_from_csv(
-                file, self.serializer_class, Faculty, unique_fields
-            )
-
-            if "errors" in result:
-                return Response(result, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                return Response(result, status=status.HTTP_201_CREATED)
+            process_faculties = ProcessFaculty(file)
+            response = process_faculties.process_data()
+            return response
         else:
             # single creation
             serializer = self.serializer_class(data=request.data)
@@ -74,16 +68,10 @@ class CreateDepartmentView(ModelViewSet):
     def create(self, request):
         # upload file
         if "department_file" in request.FILES:
-            file = request.FILES["department_file"]
-            unique_fields = ["name", "short_name"]
-            result = create_data_from_csv(
-                file, self.serializer_class, Department, unique_fields
-            )
+            process_depts = ProcessDepartments(request.FILES["department_file"])
+            response = process_depts.process_data()
+            return response
 
-            if "errors" in result:
-                return Response(result, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                return Response(result, status=status.HTTP_201_CREATED)
         else:
             # single creation
             # get faculty name
@@ -92,6 +80,13 @@ class CreateDepartmentView(ModelViewSet):
             faculty = Faculty.objects.get(name=faculty_name)
             # add faculty to request data
             request.data["faculty"] = faculty.id
+
+            # levels
+            levels = request.data.get("levels")
+            if levels:
+                request.data["levels"] = [
+                    Level.objects.get(name=level).id for level in levels
+                ]
 
             serializer = self.serializer_class(data=request.data)
             serializer.is_valid(raise_exception=True)
@@ -132,11 +127,11 @@ class LevelViewSet(ModelViewSet):
         IsAdminUser,
     )
 
-    @transaction.atomic()
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-    
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )

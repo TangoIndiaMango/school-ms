@@ -8,6 +8,8 @@ class AuthSerializer(serializers.Serializer):
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
     class Meta:
         model = CustomUser
         fields = "__all__"
@@ -46,8 +48,13 @@ class UpdatePasswordSerializer(serializers.Serializer):
 
 
 class StudentSerializer(serializers.ModelSerializer):
-    user = serializers.CharField(required=True)
-    department = serializers.CharField(required=True)
+    user = serializers.CharField(read_only=True)
+    user_id = serializers.CharField(required=True, write_only=True)
+    student_dept = serializers.CharField(read_only=True)
+    student_dept_id = serializers.CharField(required=True, write_only=True)
+    level = serializers.CharField(read_only=True)
+    level_id = serializers.CharField(required=True, write_only=True)
+
     class Meta:
         model = Student
         fields = "__all__"

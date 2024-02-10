@@ -7,8 +7,9 @@ services:
       POSTGRES_USER:  schoolms_user
       POSTGRES_PASSWORD: schoolms_password
       POSTGRES_DB: schooldb
+      PGDATA: /data/fozy_data
     volumes:
-      - ./data:/var/lib/postgresql/pgData
+      - ./fozy_data:/data/fozy_data
     ports:
       - 5432:5432
     networks:

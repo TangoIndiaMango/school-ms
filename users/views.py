@@ -3,6 +3,7 @@ from django.shortcuts import render
 from school_administration.models import Department
 from schoolms.authentication_middleware import IsAuthenticatedCustom
 from users.helpers import (
+    ProcessUserRoles,
     create_single_user_and_role,
     create_user,
     create_users_and_roles_file,
@@ -181,41 +182,42 @@ class StudentCreateView(APIView):
 
     @transaction.atomic()
     def post(self, request, *args, **kwargs):
-
-        if request.FILES:
-            serialized_students, student_errors = create_users_and_roles_file(
-                request,
-                "student_file",
-                "matric_no",
-                Student,
-                StudentSerializer,
-            )
-
-            if student_errors:
-                return Response(
-                    {
-                        "message": f"{len(serialized_students.data)} student created successfully.",
-                        "data": serialized_students.data,
-                        "errors": student_errors,
-                    },
-                    status=status.HTTP_200_OK,
-                )
-        else:
-            student_serialized, student_error_response = create_single_user_and_role(
+        # Call the process_data method to process data from the uploaded file
+        # role_model = Student  # or Lecturer, depending on the role model
+        # role_serializer = StudentSerializer  # or LecturerSerializer, depending on the role 
+        # role_field_name = "matric_no"
+        # # Instantiate the ProcessUserRoles class
+        # file = request.FILES['student_file']
+        processor = ProcessUserRoles()
+# Call the create_single_user_and_role method to create a single student user and role
+        student_serialized, student_error_response = (
+            processor.create_single_user_and_role(
                 request.data, Student, StudentSerializer, "matric_no"
             )
+        )
 
-            if student_error_response:
-                return student_error_response
+        if student_error_response:
+            return student_error_response
 
-            return Response(
-                {
-                    "message": "Student created successfully.",
-                    "data": student_serialized.data,
-                },
-                status=status.HTTP_200_OK,
-            )
+        return Response(
+            {
+                "message": "Student created successfully.",
+                "data": student_serialized.data,
+            },
+            status=status.HTTP_200_OK,
+        )
 
+        # if request.FILES:
+            
+            
+        #     serialized_roles, errors = processor.process_data()
+
+        #     if serialized_roles:
+        #         return Response({"message": "Roles created successfully", "data": serialized_roles.data}, status=201)
+        #     else:
+        #         return Response({"errors": errors}, status=400)
+        # else:
+            
     # @action(detail=False, methods=['get'], url_path='get-by-matric/(?P<matric_no>[^/.]+)')
     # def get_by_matric(self, request, matric_no=None):
     #     student = self.get_queryset().filter(matric_no=matric_no).first()
@@ -227,15 +229,14 @@ class StudentCreateView(APIView):
 
     def get(self, request, *args, **kwargs):
         student_id = kwargs.get("pk")
-        
+
         if student_id:
             # Retrieve a single role by ID using the get_role function
             return get_role(student_id, Student, self.serializer_class)
-        
+
         # If no ID is provided, get all roles using the get_all_roles function
         return get_all_roles(Student, self.serializer_class)
-    
-    
+
     def update(self, request, *args, **kwargs):
         student_id = kwargs.get("pk")
         student = Student.objects.get(pk=student_id)
@@ -303,14 +304,13 @@ class LecturerCreateView(APIView):
             )
 
     def get(self, request, *args, **kwargs):
-        
+
         lecturer_id = kwargs.get("pk")
-        
+
         if lecturer_id:
             return get_role(lecturer_id, Lecturer, self.serializer_class)
-        
+
         return get_all_roles(Lecturer, self.serializer_class)
-    
 
     def update(self, request, *args, **kwargs):
         lecturer_id = kwargs.get("pk")
@@ -330,3 +330,7 @@ class LecturerCreateView(APIView):
         return Response(
             {"message": "Lecturer deleted successfully."}, status=status.HTTP_200_OK
         )
+
+
+class StudentCourseRegisterView:
+    pass
