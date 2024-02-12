@@ -109,7 +109,7 @@ class Student(models.Model):
     )
     matric_no = models.CharField(max_length=50, unique=True)
     courses = models.ManyToManyField("courses.Course", blank=True, related_name="student")
-    student_dept = models.ForeignKey(
+    student_department = models.ForeignKey(
         "school_administration.Department",
         null=True,
         blank=True,
@@ -142,6 +142,13 @@ class Lecturer(models.Model):
         blank=True,
         on_delete=models.SET_NULL,
         related_name="lecturer_level",
+    )
+    lecturer_department = models.ForeignKey(
+        "school_administration.Department",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="lecturer_dept",
     )
 
     def __str__(self):

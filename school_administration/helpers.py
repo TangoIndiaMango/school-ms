@@ -22,11 +22,11 @@ class ProcessFaculty:
         faculties = {}
         decoded_file = self.file.read().decode("utf-8")
         reader = csv.DictReader(io.StringIO(decoded_file))
-
-        #  in a case where we upload departments with it
+        print(reader)
 
         for row in reader:
-            faculty_name = row.get("faculty", None)
+            faculty_name = row.get("name", None)
+            print(faculty_name)
             if faculty_name:
                 faculty_details = {
                     "name": faculty_name,
@@ -40,24 +40,27 @@ class ProcessFaculty:
                 }
                 faculties[faculty_name] = faculty_details
 
+        return faculties
+
     def process_data(self):
         """
         Process the data and create the faculty and department objects.
         """
         faculties = self.read_csv_into_key_values()
+        # print(faculties)
         errors = []
         #  create faculties
         for faculty_name, faculty_data in faculties.items():
             try:
                 with transaction.atomic():
-                    faculty_obj = Faculty.objects.get_or_create(
+                    faculty_obj, _ = Faculty.objects.get_or_create(
                         name=faculty_data["name"],
                         defaults={"short_name": faculty_data["short_name"]},
                     )
 
                     dean_name = faculty_data.get("dean", None)
                     if dean_name:
-                        dean, created = Lecturer.objects.get(name=dean_name)
+                        dean = Lecturer.objects.filter(name=dean_name).first()
                         faculty_obj.dean = dean
 
                     department_names = faculty_data.get("departments", [])
@@ -65,7 +68,7 @@ class ProcessFaculty:
                         department_obj = Department.objects.get(
                             name=department_name, faculty=faculty_obj
                         )
-                        faculty_obj.departments.add(department_obj)
+                        faculty_obj.departments.set(department_obj)
 
                     # save the faculty
                     faculty_obj.save()
@@ -114,6 +117,11 @@ def generate_random_id(department_code, year):
     # raise Exception("Unable to generate a unique matric number after several attempts.")
 
 
+import csv
+import io
+from django.db.models import Q
+from .models import Faculty, Department, Level
+
 class ProcessDepartments:
     def __init__(self, file):
         self.file = file
@@ -127,11 +135,7 @@ class ProcessDepartments:
         reader = csv.DictReader(io.StringIO(decoded_file))
 
         for row in reader:
-            levels = [
-                level.strip()
-                for part in row["level"].split(", ")
-                for level in part.split()
-            ]
+            levels = [level.strip() for part in row["level"].split(", ") for level in part.split() if level.strip()]
             dept_details = {
                 "name": row.get("name", None),
                 "short_name": row["short_name"],
@@ -145,36 +149,59 @@ class ProcessDepartments:
 
     def process_data(self):
         faculties = self.read_csv_into_key_values()
+        level_ids = {}
         errors = []
 
         for faculty, depts in faculties.items():
             try:
                 faculty_obj = Faculty.objects.get(name__iexact=faculty)
-
-                dept_objs = []
-                level_ids = {}
-
-                for dept in depts:
-                    level_ids.update(self.get_level_ids(dept["level"]))
-
-                    department_obj = Department.objects.create(
-                        name=dept["name"],
-                        short_name=dept["short_name"],
-                        qualification=dept["qualification"],
-                    )
-                    department_obj.level.set(level_ids.values())
-                    dept_objs.append(department_obj)
-
-                faculty_obj.departments.set(dept_objs)
-
             except Faculty.DoesNotExist:
                 errors.append(f"Faculty '{faculty}' not found.")
-            except IntegrityError:
-                errors.append(f"Department '{dept['name']}' already exists.")
-            except KeyError:
-                errors.append(f"Missing required field in CSV file.")
-            except Exception as e:
-                errors.append(str(e))
+                continue
+
+            dept_objs = []
+
+            for dept in depts:
+                _level_ids = []
+                levels = dept.get("level", None)
+                level_to_get = Q()
+                for l in levels:
+                    if level_ids.get(l, None):
+                        _level_ids.append(level_ids[l])
+                    else:
+                        level_to_get |= Q(level__iexact=l)
+
+                if level_to_get:
+                    levels = Level.objects.filter(level_to_get)
+                    for l in levels:
+                        level_ids[l.level] = l.id
+                        _level_ids.append(l.id)
+                dept["level"] = _level_ids
+
+                try:
+                    department_obj, created = Department.objects.get_or_create(
+                        name=dept["name"],
+                        defaults={
+                            "short_name": dept["short_name"],
+                            "qualification": dept["qualification"],
+                        }
+                    )
+                    if not created:
+                        errors.append(f"Department '{dept['name']}' already exists.")
+                        continue
+
+                    dept_objs.append(department_obj)
+                except IntegrityError as e:
+                    errors.append(f"Error processing department '{dept['name']}': {e}")
+                    continue
+
+            try:
+                for i, deptObj in enumerate(dept_objs):
+                    deptObj.level.set(depts[i]["level"])
+                faculty_obj.departments.set([i.id for i in dept_objs])
+            except IntegrityError as e:
+                errors.append(f"Error setting departments for faculty '{faculty}': {e}")
+                continue
 
         if errors:
             return Response({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
@@ -183,14 +210,3 @@ class ProcessDepartments:
                 {"message": "Data processed successfully."},
                 status=status.HTTP_200_OK,
             )
-
-    def get_level_ids(self, levels):
-        """
-        Retrieve or create Level objects and return a dictionary with level names as keys and corresponding IDs as values.
-        """
-        level_ids = {}
-        for level_name in levels:
-            if level_name not in level_ids:
-                level_obj, _ = Level.objects.get_or_create(level__iexact=level_name)
-                level_ids[level_name] = level_obj.id
-        return level_ids

@@ -1,12 +1,8 @@
 import datetime
-from django.shortcuts import render
 from school_administration.models import Department
 from schoolms.authentication_middleware import IsAuthenticatedCustom
 from users.helpers import (
     ProcessUserRoles,
-    create_single_user_and_role,
-    create_user,
-    create_users_and_roles_file,
     get_all_roles,
     get_role,
 )
@@ -183,41 +179,46 @@ class StudentCreateView(APIView):
     @transaction.atomic()
     def post(self, request, *args, **kwargs):
         # Call the process_data method to process data from the uploaded file
-        # role_model = Student  # or Lecturer, depending on the role model
-        # role_serializer = StudentSerializer  # or LecturerSerializer, depending on the role 
-        # role_field_name = "matric_no"
-        # # Instantiate the ProcessUserRoles class
-        # file = request.FILES['student_file']
-        processor = ProcessUserRoles()
-# Call the create_single_user_and_role method to create a single student user and role
-        student_serialized, student_error_response = (
-            processor.create_single_user_and_role(
-                request.data, Student, StudentSerializer, "matric_no"
+        role_model = Student  # or Lecturer, depending on the role model
+        role_serializer = (
+            StudentSerializer  # or LecturerSerializer, depending on the role
+        )
+        role_field_name = "matric_no"
+        processor = ProcessUserRoles(role_model, role_serializer, role_field_name)
+        # we get a file upload
+        if request.FILES:
+            file = request.FILES["student_file"]
+            student_serialized, student_error_response = processor.process_student_data(
+                file
             )
-        )
+            if student_error_response:
+                return Response(
+                    student_error_response, status=status.HTTP_400_BAD_REQUEST
+                )
+            return Response(
+                {
+                    "message": f" {len(student_serialized.data)} Students created successfully.",
+                },
+                status=status.HTTP_200_OK,
+            )
 
-        if student_error_response:
-            return student_error_response
+        else:
+            # Call the create_single_user_and_role method to create a single student user and role
+            student_serialized, student_error_response = (
+                processor.create_single_student_and_role(request.data)
+            )
 
-        return Response(
-            {
-                "message": "Student created successfully.",
-                "data": student_serialized.data,
-            },
-            status=status.HTTP_200_OK,
-        )
+            if student_error_response:
+                return student_error_response
 
-        # if request.FILES:
-            
-            
-        #     serialized_roles, errors = processor.process_data()
+            return Response(
+                {
+                    "message": "Student created successfully.",
+                    "data": student_serialized.data,
+                },
+                status=status.HTTP_200_OK,
+            )
 
-        #     if serialized_roles:
-        #         return Response({"message": "Roles created successfully", "data": serialized_roles.data}, status=201)
-        #     else:
-        #         return Response({"errors": errors}, status=400)
-        # else:
-            
     # @action(detail=False, methods=['get'], url_path='get-by-matric/(?P<matric_no>[^/.]+)')
     # def get_by_matric(self, request, matric_no=None):
     #     student = self.get_queryset().filter(matric_no=matric_no).first()
@@ -270,26 +271,34 @@ class LecturerCreateView(APIView):
 
     @transaction.atomic()
     def post(self, request, *args, **kwargs):
+        # Call the process_data method to process data from the uploaded file
+        role_model = Lecturer  # or Lecturer, depending on the role model
+        role_serializer = (
+            LecturerSerializer  # or LecturerSerializer, depending on the role
+        )
+        role_field_name = "staff_id"
+        processor = ProcessUserRoles(role_model, role_serializer, role_field_name)
+        # we get a file upload
         if request.FILES:
-            serialized_lecturers, lecturer_errors = create_users_and_roles_file(
-                request,
-                "lecturer_file",
-                "staff_id",
-                Lecturer,
-                LecturerSerializer,
+            file = request.FILES["lecturer_file"]
+            lecturer_serialized, lecturer_error_response = (
+                processor.process_lecturer_data(file)
             )
-            if lecturer_errors:
+            if lecturer_error_response:
                 return Response(
-                    {
-                        "message": f"{len(serialized_lecturers.data)} lecturers created successfully.",
-                        "data": serialized_lecturers.data,
-                        "errors": lecturer_errors,
-                    },
-                    status=status.HTTP_200_OK,
+                    lecturer_error_response, status=status.HTTP_400_BAD_REQUEST
                 )
+            return Response(
+                {
+                    "message": f" {len(lecturer_serialized.data)} Lecturers created successfully.",
+                },
+                status=status.HTTP_200_OK,
+            )
+
         else:
-            lecturer_serialized, lecturer_error_response = create_single_user_and_role(
-                request.data, Lecturer, LecturerSerializer, "staff_id"
+            # Call the create_single_user_and_role method to create a single Lecturer user and role
+            lecturer_serialized, lecturer_error_response = (
+                processor.create_single_lecturer_and_role(request.data)
             )
 
             if lecturer_error_response:
@@ -312,7 +321,7 @@ class LecturerCreateView(APIView):
 
         return get_all_roles(Lecturer, self.serializer_class)
 
-    def update(self, request, *args, **kwargs):
+    def patch(self, request, *args, **kwargs):
         lecturer_id = kwargs.get("pk")
         lecturer = Lecturer.objects.get(pk=lecturer_id)
         serializer = LecturerSerializer(lecturer, data=request.data, partial=True)
