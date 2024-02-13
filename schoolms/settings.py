@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 from decouple import config
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -45,10 +46,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     
-    #3rd party
+    # 3rd party
     "rest_framework",
     "corsheaders",
-    
+    "drf_yasg",
     
     # local apps
     "users",
@@ -60,7 +61,7 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "schoolms.exception_handler.custom_exception_handler",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 20,
+    "PAGE_SIZE": 20
 }
 
 MIDDLEWARE = [
@@ -73,6 +74,16 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+# swagger settings
+
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {"type": "apiKey", "name": "Authorization", "in": "header"},
+        "Basic": {"type": "basic"},
+    }
+}
+
 
 ROOT_URLCONF = "schoolms.urls"
 
@@ -107,21 +118,25 @@ WSGI_APPLICATION = "schoolms.wsgi.application"
 #     }
 # }
 
-DB_NAME = config("DB_NAME")
-DB_USER = config("DB_USER")
-DB_PASSWORD = config("DB_PASSWORD")
-DB_PORT = config("DB_PORT")
-DB_HOST = config("DB_HOST")
+# DB_NAME = config("DB_NAME")
+# DB_USER = config("DB_USER")
+# DB_PASSWORD = config("DB_PASSWORD")
+# DB_PORT = config("DB_PORT")
+# DB_HOST = config("DB_HOST")
+
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql_psycopg2",
+#         "NAME": DB_NAME,
+#         "USER": DB_USER,
+#         "PASSWORD": DB_PASSWORD,
+#         "HOST": DB_HOST,
+#         "PORT": DB_PORT,
+#     }
+# }
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": DB_NAME,
-        "USER": DB_USER,
-        "PASSWORD": DB_PASSWORD,
-        "HOST": DB_HOST,
-        "PORT": DB_PORT,
-    }
+'default': dj_database_url.config(default=config("DB_URL"))
 }
 
 

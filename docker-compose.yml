@@ -1,21 +1,38 @@
 version: '3.8'
+
 services:
+  api:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    container_name: schoolms-web
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    networks:
+      - schoolms-network
+
   postgres:
     container_name: schoolms-postgres
     image: postgres:15-alpine
     environment:
-      POSTGRES_USER: schoolms_user
-      POSTGRES_PASSWORD: schoolms_user
-      POSTGRES_DB: schoolms
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      PGDATA: /data/postgres_data
     volumes:
-      - ./data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     ports:
-      - 5432:5432
+      - "5432:5432"
     networks:
       - schoolms-network
-    restart: unless-stopped  
-      
+    restart: unless-stopped
+
 networks:
   schoolms-network:
-   driver: bridge
+    driver: bridge
 
+volumes:
+  postgres_data:
