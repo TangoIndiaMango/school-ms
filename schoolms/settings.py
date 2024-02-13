@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 from decouple import config
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -117,21 +118,25 @@ WSGI_APPLICATION = "schoolms.wsgi.application"
 #     }
 # }
 
-DB_NAME = config("DB_NAME")
-DB_USER = config("DB_USER")
-DB_PASSWORD = config("DB_PASSWORD")
-DB_PORT = config("DB_PORT")
-DB_HOST = config("DB_HOST")
+# DB_NAME = config("DB_NAME")
+# DB_USER = config("DB_USER")
+# DB_PASSWORD = config("DB_PASSWORD")
+# DB_PORT = config("DB_PORT")
+# DB_HOST = config("DB_HOST")
+
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql_psycopg2",
+#         "NAME": DB_NAME,
+#         "USER": DB_USER,
+#         "PASSWORD": DB_PASSWORD,
+#         "HOST": DB_HOST,
+#         "PORT": DB_PORT,
+#     }
+# }
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": DB_NAME,
-        "USER": DB_USER,
-        "PASSWORD": DB_PASSWORD,
-        "HOST": DB_HOST,
-        "PORT": DB_PORT,
-    }
+'default': dj_database_url.config(default=config("DB_URL"))
 }
 
 
