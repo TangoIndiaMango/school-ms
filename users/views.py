@@ -193,7 +193,11 @@ class StudentCreateView(APIView):
             )
             if student_error_response:
                 return Response(
-                    student_error_response, status=status.HTTP_400_BAD_REQUEST
+                    {
+                        "message": f" Students created successfully.",
+                        "errors": student_error_response,
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             return Response(
                 {
@@ -286,11 +290,15 @@ class LecturerCreateView(APIView):
             )
             if lecturer_error_response:
                 return Response(
-                    lecturer_error_response, status=status.HTTP_400_BAD_REQUEST
+                    {
+                        "message": f" Lecturers created successfully.",
+                        "errors": lecturer_error_response,
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             return Response(
                 {
-                    "message": f" {len(lecturer_serialized.data)} Lecturers created successfully.",
+                    "message": f" {len(lecturer_serialized)} Lecturers created successfully.",
                 },
                 status=status.HTTP_200_OK,
             )

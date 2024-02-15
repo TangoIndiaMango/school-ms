@@ -1,6 +1,5 @@
 db_up:
-	docker-compose up --remove-orphans -d
-
+	docker-compose up --no-deps -d postgres
 db_down:
 	docker-compose down
 

@@ -3,7 +3,12 @@ from rest_framework import serializers
 from .models import Course, CourseRegistration
 
 
-class CourseSerializer(serializers.ModelSerializer):
+class CreateCourseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields = "__all__"
+
+class CourseRegSerializer(serializers.ModelSerializer):
     department_course = serializers.CharField(read_only=True)
     department_course_id = serializers.CharField(write_only=True)
     course_level = serializers.CharField(read_only=True)
@@ -25,13 +30,24 @@ class CourseUploadSerializer(serializers.ModelSerializer):
 
 
 class GetCourseByDepartmentSerializer(serializers.ModelSerializer):
-    department_name = serializers.CharField(
-        source="department_course.name", read_only=True
-    )
+    department_name = serializers.CharField(read_only=True)
+    course_name = serializers.CharField(read_only=True)
+    level = serializers.CharField(read_only=True)
 
     class Meta:
         model = Course
         fields = "__all__"
+
+
+# class GetCourseByLevelSerializer(serializers.ModelSerializer):
+#     department_name = serializers.CharField(read_only=True)
+#     course_name = serializers.CharField(read_only=True)
+#     level = serializers.CharField(read_only=True)
+
+#     class Meta:
+#         model = Course
+#         fields = "__all__"
+
 
 
 class CourseRegistarionSerializer(serializers.ModelSerializer):

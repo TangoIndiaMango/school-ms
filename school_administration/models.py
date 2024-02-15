@@ -63,7 +63,8 @@ class Department(models.Model):
 
 
 class Level(models.Model):
-    level = models.CharField(max_length=20, unique=True)
+    name = models.CharField(max_length=100, unique=True)
+    level = models.IntegerField()
     staff_advisor_level = models.ForeignKey(
         "users.Lecturer",
         on_delete=models.SET_NULL,
@@ -71,6 +72,7 @@ class Level(models.Model):
         blank=True,
         related_name="staff_advisor_level",
     )
+    courses = models.ManyToManyField("courses.Course", related_name="level", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -78,4 +80,4 @@ class Level(models.Model):
         ordering = ("-created_at",)
 
     def __str__(self):
-        return f"{self.level}"
+        return f"{self.name} - {self.level}"

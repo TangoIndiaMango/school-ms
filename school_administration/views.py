@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.http import Http404
 from django.shortcuts import render
 from rest_framework.viewsets import ModelViewSet
@@ -5,7 +6,7 @@ from rest_framework.viewsets import ModelViewSet
 from school_administration.models import Department, Faculty, Level
 from schoolms.authentication_middleware import IsAuthenticatedCustom
 from users.user_permissions import IsAdminUser
-from .helpers import ProcessFaculty, ProcessDepartments
+from .helpers import ProcessFaculty, ProcessDepartments, generate_random_id
 from .serializers import DepartmentSerializer, FacultySerializer, LevelSerializer
 from django.db import IntegrityError, transaction
 from rest_framework.response import Response
@@ -187,9 +188,21 @@ class LevelViewSet(ModelViewSet):
     )
 
     def create(self, request, *args, **kwargs):
+        department_id = request.data.get("department_id")
+        department = Department.objects.get(id=department_id)
+        #  get currrent year
+        current_year = datetime.now().year
+        department_unique_name = generate_random_id(department.short_name, current_year)
+    
+        #  we create a unique name for that department
+        request.data["name"] = department_unique_name
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
+        
+        #  so we then add the level to the department
+        department.level.add(serializer.data["id"])
+        
         headers = self.get_success_headers(serializer.data)
         return Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
