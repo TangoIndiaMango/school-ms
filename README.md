@@ -11,13 +11,13 @@
 1. Clone the repository:
 
    ```bash
-   git clone <repository_url>
+   git clone <[repository_url](https://github.com/fozygcl/School-Management-System/)>
    ```
 
 i. Navigate to the project directory:
 
 ```bash
-cd <project_directory>
+cd <School-Management-System>
 ```
 
 ii. Create and activate a virtual environment:
