@@ -1,0 +1,3 @@
+This file should be renamed to .env remove the example at the end
+
+DB_URL=the db_url
