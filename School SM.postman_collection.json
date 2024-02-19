@@ -1,0 +1,1953 @@
+{
+	"info": {
+		"_postman_id": "0b75ac20-2195-47ef-93dd-82ffa042ff9c",
+		"name": "School SM",
+		"description": "# 📄 Get started here\n\nThis template contains a boilerplate for documentation that you can quickly customize and reuse.\n\n## 🔖 How to use this template\n\n- Replace the content given brackets (()) with your API's details.\n- Tips are formatted in `codespan` - feel free to read and remove them.\n    \n\n---\n\n`Start with a brief overview of what your API offers.`\n\nThe ((product name)) provides many API products, tools, and resources that enable you to ((add product value here)).\n\n`You can also list the APIs you offer, link to the relevant pages, or do both in this section.`\n\n## **Getting started guide**\n\n`List the steps or points required to start using your APIs. Make sure to cover everything required to reach success with your API as quickly as possible.`\n\nTo start using the ((add APIs here)), you need to -\n\n`The points given below are from The Postman API's documentation. You can reference it to write your own getting started guide.`\n\n- You must use a valid API Key to send requests to the API endpoints. You can get your API key from Postman's [integrations dashboard](https://go.postman.co/settings/me/api-keys).\n- The API has [rate and usage limits](https://postman.postman.co/workspace/Collection-Templates~6311738d-2e70-441f-ae12-78caf078c5b7/collection/22517504-e9c28f47-1253-44af-a2f3-20dce4da1f18?ctx=documentation#rate-and-usage-limits).\n- The API only responds to HTTPS-secured communications. Any requests sent via HTTP return an HTTP 301 redirect to the corresponding HTTPS resources.\n- The API returns request responses in JSON format. When an API request returns an error, it is sent in the JSON response as an error key.\n    \n\n## Authentication\n\n`Add details on the authorization keys/tokens required, steps that cover how to get them, and the relevant error codes.`\n\nThe ((product name)) API uses ((add your API's authorization type)) for authentication.\n\n`The details given below are from the Postman API's documentation. You can reference it to write your own authentication section.`\n\nPostman uses API keys for authentication. You can generate a Postman API key in the [API keys](https://postman.postman.co/settings/me/api-keys) section of your Postman account settings.\n\nYou must include an API key in each request to the Postman API with the X-Api-Key request header.\n\n### Authentication error response\n\nIf an API key is missing, malformed, or invalid, you will receive an HTTP 401 Unauthorized response code.\n\n## Rate and usage limits\n\n`Use this section to cover your APIs' terms of use. Include API limits, constraints, and relevant error codes, so consumers understand the permitted API usage and practices.`\n\n`The example given below is from The Postman API's documentation. Use it as a reference to write your APIs' terms of use.`\n\nAPI access rate limits apply at a per-API key basis in unit time. The limit is 300 requests per minute. Also, depending on your plan, you may have usage limits. If you exceed either limit, your request will return an HTTP 429 Too Many Requests status code.\n\nEach API response returns the following set of headers to help you identify your use status:\n\n| Header | Description |\n| --- | --- |\n| `X-RateLimit-Limit` | The maximum number of requests that the consumer is permitted to make per minute. |\n| `X-RateLimit-Remaining` | The number of requests remaining in the current rate limit window. |\n| `X-RateLimit-Reset` | The time at which the current rate limit window resets in UTC epoch seconds. |\n\n### 503 response\n\nAn HTTP `503` response from our servers indicates there is an unexpected spike in API access traffic. The server is usually operational within the next five minutes. If the outage persists or you receive any other form of an HTTP `5XX` error, [contact support](https://support.postman.com/hc/en-us/requests/new/).\n\n### **Need some help?**\n\n`Add links that customers can refer to whenever they need help.`\n\nIn case you have questions, go through our tutorials ((link to your video or help documentation here)). Or visit our FAQ page ((link to the relevant page)).\n\nOr you can check out our community forum, there’s a good chance our community has an answer for you. Visit our developer forum ((link to developer forum)) to review topics, ask questions, and learn from others.\n\n`You can also document or add links to libraries, code examples, and other resources needed to make a request.`",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21378195",
+		"_collection_link": "https://winter-comet-779794.postman.co/workspace/Fozy-Workspace~333f9c60-b089-438b-984d-995948cf6a0a/collection/21378195-0b75ac20-2195-47ef-93dd-82ffa042ff9c?action=share&source=collection_link&creator=21378195"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Create Admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"Adminwembly\",\r\n    \"last_name\": \"Adminwanner\",\r\n    \"email\": \"weather@gmail.com\",\r\n    \"role\": \"admin\",\r\n    \"password\": \"Makemelivelife\",\r\n    \"is_staff\": true,\r\n    \"is_superuser\": true,\r\n    \"gender\": \"male\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/users/create/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"create",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Students",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"Benjamin\",\r\n    \"last_name\": \"Franklin\",\r\n    \"email\": \"benjifra@gmail.com\",\r\n    \"phone\": 234567888892,\r\n    \"password\": \"KillBill\",\r\n    \"gender\": \"male\",\r\n    \"role\": \"student\",\r\n    \"matric_no\": \"Franklin/12/0987\",\r\n    \"student_department\": 20,\r\n    \"level\": 32\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/users/student/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"student",
+								""
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create Students",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"first_name\": \"Benjamin\",\r\n    \"last_name\": \"Franklin\",\r\n    \"email\": \"benjifra@gmail.com\",\r\n    \"phone\": 234567888892,\r\n    \"password\": \"KillBill\",\r\n    \"gender\": \"male\",\r\n    \"role\": \"student\",\r\n    \"matric_no\": \"Franklin/12/0987\",\r\n    \"student_department\": 20,\r\n    \"level\": 32\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/users/student/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"users",
+										"student",
+										""
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 19 Feb 2024 04:15:18 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "WSGIServer/0.2 CPython/3.12.0"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept, Cookie, origin"
+								},
+								{
+									"key": "Allow",
+									"value": "GET, POST, DELETE, HEAD, OPTIONS"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Length",
+									"value": "231"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "Cross-Origin-Opener-Policy",
+									"value": "same-origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Student created successfully.\",\n    \"data\": {\n        \"id\": 9,\n        \"user\": \"Benjamin Franklin\",\n        \"student_department\": \" (DPY) Department of Parliament\",\n        \"level\": \"DPY/2024/6333 - 100\",\n        \"matric_no\": \"Franklin/12/0987\",\n        \"semester\": null,\n        \"courses\": []\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Students",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"Student1\",\r\n    \"last_name\": \"Student1asin\",\r\n    \"email\": \"students@gmail.com\",\r\n    \"role\": \"student\",\r\n    \"password\": \"Makemelivelife\",\r\n    \"gender\": \"male\",\r\n    \"matric_no\": \"MCS/12/2309\",\r\n    \"student_department\": \"Department of Meteorology\",\r\n    \"level\": 100\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/users/student/17",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"student",
+								"17"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Lecturer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/users/lecturer/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"lecturer",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Lecturer",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"Lecturer1\",\r\n    \"last_name\": \"Lecturer11asin\",\r\n    \"email\": \"lecturer@gmail.com\",\r\n    \"role\": \"lecturer\",\r\n    \"password\": \"Makemelivelife\",\r\n    \"gender\": \"male\",\r\n    \"staff_id\": \"M/12/2309\",\r\n    \"lecturer_department\": \"Department of Meteorology\",\r\n    \"level\": 100,\r\n    \"qualification\": \"BSC, MSE, MEE\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/users/lecturer/20/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"lecturer",
+								"20",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"weather@gmail.com\",\r\n    \"password\": \"Makemelivelife\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/users/login/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"login",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Current User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/users/user",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Students",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/users/student/8",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"student",
+								"8"
+							]
+						},
+						"description": "Add /id/ to get specific student e.g /20/"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Lecturers",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/users/lecturer/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"lecturer",
+								""
+							]
+						},
+						"description": "Add /id/ to get specific student e.g /20/"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Student",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/users/student/2/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"student",
+								"2",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "The `/me` endpoints let you manage information about the authenticated user."
+		},
+		{
+			"name": "Courses",
+			"item": [
+				{
+					"name": "Create courses",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"course_code\": \"MAPTS107\",\r\n    \"course_name\": \"Meteorology and Physical Atmospkere\",\r\n    \"course_description\": \"Physical activities of the world.\",\r\n    \"course_credit\": 3,\r\n    \"course_unit\": 2,\r\n    \"course_status\": true,\r\n    \"mark\": \"100\"\r\n}"
+						},
+						"url": {
+							"raw": "{{host}}/course/courses",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"course",
+								"courses"
+							],
+							"query": [
+								{
+									"key": "workspace",
+									"value": "{{workspaceId}}",
+									"description": "Optional. A workspace ID in which to create the collection.\n\nIf you do not include this query parameter, the system creates the collection in your \"My Workspace\" workspace.",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Course",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"course_code\": \"CSE512\",\n    \"course_name\": \"Advanced Algorithms in Comp Science\",\n    \"course_description\": \"computer science.\",\n    \"course_credit\": 4,\n    \"course_unit\": 3,\n    \"course_status\": true,\n    \"course_prerequisite\": \"\",\n    \"mark\": \"150\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/course/courses/19",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"course",
+								"courses",
+								"19"
+							],
+							"query": [
+								{
+									"key": "workspace",
+									"value": "{{workspaceId}}",
+									"description": "Optional. A workspace ID in which to create the collection.\n\nIf you do not include this query parameter, the system creates the collection in your \"My Workspace\" workspace.",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Creates a collection using the [Postman Collection v2 schema format](https://schema.postman.com/json/collection/v2.1.0/docs/index.html). Include a `collection` object in the request body that contains the following required properties:\n\n- `info` — An **object** that contains the following properties:\n    \n    - `name` — A **string** value that contains the collection's name.\n        \n    - `schema` — A **string** that contains a URL to the collection's schema. For example, the `https://schema.getpostman.com/collection/v1` URL.\n        \n- `item` — An **object** that contains the HTTP request and response information.\n    \n    - `request` — An **object** that contains the collection's request information. For a complete list of values, refer to the `definitions.request` entry in the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json). If you pass an empty object for this value, the system defaults to an untitled GET request.\n        \n\n**Note:**\n\n- For a complete list of available property values for this endpoint, use the following references available in the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json):\n    \n    - `info` object — Use the `definitions.info` entry.\n        \n    - `item` object — Use the `definitions.items` entry.\n        \n- For all other possible values, refer to the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json)."
+					},
+					"response": []
+				},
+				{
+					"name": "Get a course",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/course/courses/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"course",
+								"courses",
+								"1"
+							],
+							"query": [
+								{
+									"key": "access_key",
+									"value": "{{accessKey}}",
+									"description": "Optional. A collection's read-only access key. Using this query parameter does not require an API key to call the endpoint.",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Gets information about a collection. For a complete list of this endpoint's possible values, use the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json)."
+					},
+					"response": []
+				},
+				{
+					"name": "Get courses by department",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/course/dept/17",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"course",
+								"dept",
+								"17"
+							],
+							"query": [
+								{
+									"key": "department_name",
+									"value": "department of physics",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Gets information about a collection. For a complete list of this endpoint's possible values, use the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json)."
+					},
+					"response": []
+				},
+				{
+					"name": "Get department courses for a level",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/course/departments/9/levels/16",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"course",
+								"departments",
+								"9",
+								"levels",
+								"16"
+							]
+						},
+						"description": "Gets information about a collection. For a complete list of this endpoint's possible values, use the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json)."
+					},
+					"response": []
+				},
+				{
+					"name": "department Courses",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "dept_courses",
+									"type": "file",
+									"src": "/C:/Users/aliyu/Downloads/department courses - Sheet1.csv"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/course/department",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"course",
+								"department"
+							]
+						},
+						"description": "Gets information about a collection. For a complete list of this endpoint's possible values, use the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json)."
+					},
+					"response": []
+				},
+				{
+					"name": "Single department Courses",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"department_id\":15,\r\n    \"courses\": [2,3,6,9]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/course/departments",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"course",
+								"departments"
+							]
+						},
+						"description": "Gets information about a collection. For a complete list of this endpoint's possible values, use the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json)."
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Single department Courses",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "dept_courses",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/course/courses/department/file",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"course",
+								"courses",
+								"department",
+								"file"
+							]
+						},
+						"description": "Gets information about a collection. For a complete list of this endpoint's possible values, use the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json)."
+					},
+					"response": []
+				},
+				{
+					"name": "level Courses",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"department\": \"9\",\r\n    \"level\": \"15\",\r\n    \"courses\": [6,1]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/course/level/department",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"course",
+								"level",
+								"department"
+							]
+						},
+						"description": "Gets information about a collection. For a complete list of this endpoint's possible values, use the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json)."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a coursse",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/course/courses/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"course",
+								"courses",
+								"1"
+							]
+						},
+						"description": "Deletes a collection."
+					},
+					"response": []
+				},
+				{
+					"name": "Get all courses",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "department_file",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/course/courses",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"course",
+								"courses"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "2",
+									"description": "Optional. A workspace ID.",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Gets all of your [collections](https://www.getpostman.com/docs/collections). The response includes all of your subscribed collections."
+					},
+					"response": []
+				},
+				{
+					"name": "Course registration",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"courses\":[6,8,10],\r\n    \"semester\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/course/register?student=8",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"course",
+								"register"
+							],
+							"query": [
+								{
+									"key": "student",
+									"value": "8"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "The `/collections` endpoints let you manage your [collections](https://learning.postman.com/docs/sending-requests/intro-to-collections/)."
+		},
+		{
+			"name": "Department & Faculty",
+			"item": [
+				{
+					"name": "Create Department",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Department of Parliament\",\r\n    \"short_name\": \"DPY\",\r\n    \"program_duration\": \"8 years\",\r\n    \"qualification\": \"BTech\",\r\n    \"faculty\": 21,\r\n    \"level\": 100\r\n}"
+						},
+						"url": {
+							"raw": "{{host}}/departments",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"departments"
+							],
+							"query": [
+								{
+									"key": "workspace",
+									"value": "{{workspaceId}}",
+									"description": "Optional. A workspace ID in which to create the collection.\n\nIf you do not include this query parameter, the system creates the collection in your \"My Workspace\" workspace.",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Creates a collection using the [Postman Collection v2 schema format](https://schema.postman.com/json/collection/v2.1.0/docs/index.html). Include a `collection` object in the request body that contains the following required properties:\n\n*   `info` — An **object** that contains the following properties:\n    *   `name` — A **string** value that contains the collection's name.\n    *   `schema` — A **string** that contains a URL to the collection's schema. For example, the `https://schema.getpostman.com/collection/v1` URL.\n*   `item` — An **object** that contains the HTTP request and response information.\n    *   `request` — An **object** that contains the collection's request information. For a complete list of values, refer to the `definitions.request` entry in the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json). If you pass an empty object for this value, the system defaults to an untitled GET request.\n\n**Note:**\n\n*   For a complete list of available property values for this endpoint, use the following references available in the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json):\n    *   `info` object — Use the `definitions.info` entry.\n    *   `item` object — Use the `definitions.items` entry.\n*   For all other possible values, refer to the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json)."
+					},
+					"response": [
+						{
+							"name": "Create Department",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Department of Parliament\",\r\n    \"short_name\": \"DPY\",\r\n    \"program_duration\": \"8 years\",\r\n    \"qualification\": \"BTech\",\r\n    \"faculty\": 21,\r\n    \"level\": 100\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/departments",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"departments"
+									],
+									"query": [
+										{
+											"key": "workspace",
+											"value": "{{workspaceId}}",
+											"description": "Optional. A workspace ID in which to create the collection.\n\nIf you do not include this query parameter, the system creates the collection in your \"My Workspace\" workspace.",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 19 Feb 2024 04:03:51 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "WSGIServer/0.2 CPython/3.12.0"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept, Cookie, origin"
+								},
+								{
+									"key": "Allow",
+									"value": "GET, POST, HEAD, OPTIONS"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Length",
+									"value": "294"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "Cross-Origin-Opener-Policy",
+									"value": "same-origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 20,\n    \"levels\": [\n        100\n    ],\n    \"name\": \"Department of Parliament\",\n    \"short_name\": \"DPY\",\n    \"program_duration\": \"8 years\",\n    \"qualification\": \"BTech\",\n    \"created_at\": \"2024-02-19T04:03:51.863132Z\",\n    \"updated_at\": \"2024-02-19T04:03:51.863132Z\",\n    \"department_head\": null,\n    \"level\": [\n        32\n    ],\n    \"courses\": [],\n    \"students\": [],\n    \"lecturers\": []\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Level",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"department_id\": 9,\r\n    \"level\": 300\r\n}"
+						},
+						"url": {
+							"raw": "{{host}}/levels",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"levels"
+							],
+							"query": [
+								{
+									"key": "workspace",
+									"value": "{{workspaceId}}",
+									"description": "Optional. A workspace ID in which to create the collection.\n\nIf you do not include this query parameter, the system creates the collection in your \"My Workspace\" workspace.",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Creates a collection using the [Postman Collection v2 schema format](https://schema.postman.com/json/collection/v2.1.0/docs/index.html). Include a `collection` object in the request body that contains the following required properties:\n\n*   `info` — An **object** that contains the following properties:\n    *   `name` — A **string** value that contains the collection's name.\n    *   `schema` — A **string** that contains a URL to the collection's schema. For example, the `https://schema.getpostman.com/collection/v1` URL.\n*   `item` — An **object** that contains the HTTP request and response information.\n    *   `request` — An **object** that contains the collection's request information. For a complete list of values, refer to the `definitions.request` entry in the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json). If you pass an empty object for this value, the system defaults to an untitled GET request.\n\n**Note:**\n\n*   For a complete list of available property values for this endpoint, use the following references available in the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json):\n    *   `info` object — Use the `definitions.info` entry.\n    *   `item` object — Use the `definitions.items` entry.\n*   For all other possible values, refer to the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json)."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Level",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"level\": 100\r\n}"
+						},
+						"url": {
+							"raw": "{{host}}/levels",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"levels"
+							],
+							"query": [
+								{
+									"key": "workspace",
+									"value": "{{workspaceId}}",
+									"description": "Optional. A workspace ID in which to create the collection.\n\nIf you do not include this query parameter, the system creates the collection in your \"My Workspace\" workspace.",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Creates a collection using the [Postman Collection v2 schema format](https://schema.postman.com/json/collection/v2.1.0/docs/index.html). Include a `collection` object in the request body that contains the following required properties:\n\n*   `info` — An **object** that contains the following properties:\n    *   `name` — A **string** value that contains the collection's name.\n    *   `schema` — A **string** that contains a URL to the collection's schema. For example, the `https://schema.getpostman.com/collection/v1` URL.\n*   `item` — An **object** that contains the HTTP request and response information.\n    *   `request` — An **object** that contains the collection's request information. For a complete list of values, refer to the `definitions.request` entry in the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json). If you pass an empty object for this value, the system defaults to an untitled GET request.\n\n**Note:**\n\n*   For a complete list of available property values for this endpoint, use the following references available in the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json):\n    *   `info` object — Use the `definitions.info` entry.\n    *   `item` object — Use the `definitions.items` entry.\n*   For all other possible values, refer to the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json)."
+					},
+					"response": [
+						{
+							"name": "Get Level",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"level\": 100\r\n}"
+								},
+								"url": {
+									"raw": "{{host}}/levels",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"levels"
+									],
+									"query": [
+										{
+											"key": "workspace",
+											"value": "{{workspaceId}}",
+											"description": "Optional. A workspace ID in which to create the collection.\n\nIf you do not include this query parameter, the system creates the collection in your \"My Workspace\" workspace.",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 19 Feb 2024 04:14:16 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "WSGIServer/0.2 CPython/3.12.0"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept, Cookie, origin"
+								},
+								{
+									"key": "Allow",
+									"value": "GET, POST, HEAD, OPTIONS"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Length",
+									"value": "3142"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "Cross-Origin-Opener-Policy",
+									"value": "same-origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"count\": 12,\n    \"next\": null,\n    \"previous\": null,\n    \"results\": [\n        {\n            \"id\": 32,\n            \"courses\": [],\n            \"department\": \"Department of Parliament\",\n            \"name\": \"DPY/2024/6333\",\n            \"level\": 100,\n            \"created_at\": \"2024-02-19T04:03:51.853133Z\",\n            \"updated_at\": \"2024-02-19T04:03:51.854132Z\",\n            \"staff_advisor_level\": null\n        },\n        {\n            \"id\": 29,\n            \"courses\": [],\n            \"department\": \"Department of Basic Science\",\n            \"name\": \"DHS/2024/2905\",\n            \"level\": 100,\n            \"created_at\": \"2024-02-17T07:31:27.163318Z\",\n            \"updated_at\": \"2024-02-17T07:31:27.163318Z\",\n            \"staff_advisor_level\": null\n        },\n        {\n            \"id\": 16,\n            \"courses\": [\n                {\n                    \"course_code\": \"BIO106\",\n                    \"course_name\": \"Biology\"\n                },\n                {\n                    \"course_code\": \"CSE101\",\n                    \"course_name\": \"Introduction to Computer Science\"\n                },\n                {\n                    \"course_code\": \"PHY102\",\n                    \"course_name\": \"General Physics\"\n                }\n            ],\n            \"department\": \"Department of Political Science\",\n            \"name\": \"POL/2024/0630\",\n            \"level\": 300,\n            \"created_at\": \"2024-02-17T01:08:57.268756Z\",\n            \"updated_at\": \"2024-02-17T01:08:57.268756Z\",\n            \"staff_advisor_level\": null\n        },\n        {\n            \"id\": 15,\n            \"courses\": [],\n            \"department\": \"Department of Political Science\",\n            \"name\": \"POL/2024/4587\",\n            \"level\": 200,\n            \"created_at\": \"2024-02-17T01:08:51.007665Z\",\n            \"updated_at\": \"2024-02-17T01:08:51.007665Z\",\n            \"staff_advisor_level\": null\n        },\n        {\n            \"id\": 14,\n            \"courses\": [],\n            \"department\": \"Department of Political Science\",\n            \"name\": \"POL/2024/7036\",\n            \"level\": 100,\n            \"created_at\": \"2024-02-17T01:08:43.951159Z\",\n            \"updated_at\": \"2024-02-17T01:08:43.951159Z\",\n            \"staff_advisor_level\": null\n        },\n        {\n            \"id\": 13,\n            \"courses\": [\n                {\n                    \"course_code\": \"BIO106\",\n                    \"course_name\": \"Biology\"\n                },\n                {\n                    \"course_code\": \"MAT103\",\n                    \"course_name\": \"Calculus\"\n                }\n            ],\n            \"department\": \"Department of Film Studies\",\n            \"name\": \"FILM/2024/7257\",\n            \"level\": 300,\n            \"created_at\": \"2024-02-16T07:14:30.660785Z\",\n            \"updated_at\": \"2024-02-16T07:14:30.660785Z\",\n            \"staff_advisor_level\": null\n        },\n        {\n            \"id\": 12,\n            \"courses\": [\n                {\n                    \"course_code\": \"PHY201\",\n                    \"course_name\": \"Electromagnetism\"\n                },\n                {\n                    \"course_code\": \"PHY102\",\n                    \"course_name\": \"General Physics\"\n                }\n            ],\n            \"department\": \"Department of Film Studies\",\n            \"name\": \"FILM/2024/3403\",\n            \"level\": 100,\n            \"created_at\": \"2024-02-16T07:14:23.373976Z\",\n            \"updated_at\": \"2024-02-16T07:14:23.373976Z\",\n            \"staff_advisor_level\": null\n        },\n        {\n            \"id\": 11,\n            \"courses\": [],\n            \"department\": \"Department of Design\",\n            \"name\": \"DES/2024/7436\",\n            \"level\": 600,\n            \"created_at\": \"2024-02-15T21:12:17.528016Z\",\n            \"updated_at\": \"2024-02-15T21:12:17.528016Z\",\n            \"staff_advisor_level\": null\n        },\n        {\n            \"id\": 10,\n            \"courses\": [],\n            \"department\": \"Department of Design\",\n            \"name\": \"DES/2024/1878\",\n            \"level\": 100,\n            \"created_at\": \"2024-02-15T21:11:30.760541Z\",\n            \"updated_at\": \"2024-02-15T21:11:30.760541Z\",\n            \"staff_advisor_level\": null\n        },\n        {\n            \"id\": 9,\n            \"courses\": [],\n            \"department\": \"Department of Design\",\n            \"name\": \"DES/2024/9248\",\n            \"level\": 300,\n            \"created_at\": \"2024-02-15T21:09:33.505017Z\",\n            \"updated_at\": \"2024-02-15T21:09:33.505017Z\",\n            \"staff_advisor_level\": null\n        },\n        {\n            \"id\": 8,\n            \"courses\": [],\n            \"department\": \"Department of Design\",\n            \"name\": \"DES/2024/9990\",\n            \"level\": 200,\n            \"created_at\": \"2024-02-15T21:05:39.241405Z\",\n            \"updated_at\": \"2024-02-15T21:05:39.241405Z\",\n            \"staff_advisor_level\": null\n        },\n        {\n            \"id\": 6,\n            \"courses\": [\n                {\n                    \"course_code\": \"MAT103\",\n                    \"course_name\": \"Calculus\"\n                },\n                {\n                    \"course_code\": \"ENG104\",\n                    \"course_name\": \"English Literature\"\n                },\n                {\n                    \"course_code\": \"CHE105\",\n                    \"course_name\": \"Chemistry\"\n                }\n            ],\n            \"department\": \"Department of Design\",\n            \"name\": \"DES/2024/0246\",\n            \"level\": 500,\n            \"created_at\": \"2024-02-15T06:49:01.880294Z\",\n            \"updated_at\": \"2024-02-15T21:58:14.087945Z\",\n            \"staff_advisor_level\": null\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Single Level",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"level\": 100\r\n}"
+						},
+						"url": {
+							"raw": "{{host}}/levels/6",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"levels",
+								"6"
+							],
+							"query": [
+								{
+									"key": "workspace",
+									"value": "{{workspaceId}}",
+									"description": "Optional. A workspace ID in which to create the collection.\n\nIf you do not include this query parameter, the system creates the collection in your \"My Workspace\" workspace.",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Creates a collection using the [Postman Collection v2 schema format](https://schema.postman.com/json/collection/v2.1.0/docs/index.html). Include a `collection` object in the request body that contains the following required properties:\n\n*   `info` — An **object** that contains the following properties:\n    *   `name` — A **string** value that contains the collection's name.\n    *   `schema` — A **string** that contains a URL to the collection's schema. For example, the `https://schema.getpostman.com/collection/v1` URL.\n*   `item` — An **object** that contains the HTTP request and response information.\n    *   `request` — An **object** that contains the collection's request information. For a complete list of values, refer to the `definitions.request` entry in the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json). If you pass an empty object for this value, the system defaults to an untitled GET request.\n\n**Note:**\n\n*   For a complete list of available property values for this endpoint, use the following references available in the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json):\n    *   `info` object — Use the `definitions.info` entry.\n    *   `item` object — Use the `definitions.items` entry.\n*   For all other possible values, refer to the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json)."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Faculty",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"School of Humanitarian Studies\",\r\n    \"short_name\": \"SHS\"\r\n}"
+						},
+						"url": {
+							"raw": "{{host}}/faculties",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"faculties"
+							],
+							"query": [
+								{
+									"key": "faculty_file",
+									"value": "{{workspaceId}}",
+									"description": "Optional. A workspace ID in which to create the collection.\n\nIf you do not include this query parameter, the system creates the collection in your \"My Workspace\" workspace.",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Creates a collection using the [Postman Collection v2 schema format](https://schema.postman.com/json/collection/v2.1.0/docs/index.html). Include a `collection` object in the request body that contains the following required properties:\n\n*   `info` — An **object** that contains the following properties:\n    *   `name` — A **string** value that contains the collection's name.\n    *   `schema` — A **string** that contains a URL to the collection's schema. For example, the `https://schema.getpostman.com/collection/v1` URL.\n*   `item` — An **object** that contains the HTTP request and response information.\n    *   `request` — An **object** that contains the collection's request information. For a complete list of values, refer to the `definitions.request` entry in the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json). If you pass an empty object for this value, the system defaults to an untitled GET request.\n\n**Note:**\n\n*   For a complete list of available property values for this endpoint, use the following references available in the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json):\n    *   `info` object — Use the `definitions.info` entry.\n    *   `item` object — Use the `definitions.items` entry.\n*   For all other possible values, refer to the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json)."
+					},
+					"response": [
+						{
+							"name": "Create Faculty",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"School of Humanitarian Studies\",\r\n    \"short_name\": \"SHS\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/faculties",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"faculties"
+									],
+									"query": [
+										{
+											"key": "faculty_file",
+											"value": "{{workspaceId}}",
+											"description": "Optional. A workspace ID in which to create the collection.\n\nIf you do not include this query parameter, the system creates the collection in your \"My Workspace\" workspace.",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 19 Feb 2024 03:58:22 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "WSGIServer/0.2 CPython/3.12.0"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept, Cookie, origin"
+								},
+								{
+									"key": "Allow",
+									"value": "GET, POST, HEAD, OPTIONS"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Length",
+									"value": "183"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "Cross-Origin-Opener-Policy",
+									"value": "same-origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 21,\n    \"name\": \"School of Humanitarian Studies\",\n    \"short_name\": \"SHS\",\n    \"created_at\": \"2024-02-19T03:58:22.148757Z\",\n    \"updated_at\": \"2024-02-19T03:58:22.148757Z\",\n    \"dean\": null,\n    \"departments\": []\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Department",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Department of Basic Science\",\n    \"short_name\": \"DBS\",\n    \"qualification\": \"BSc, MSc\",\n    \"program_duration\": \"7 years\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/departments/18",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"departments",
+								"18"
+							],
+							"query": [
+								{
+									"key": "workspace",
+									"value": "{{workspaceId}}",
+									"description": "Optional. A workspace ID in which to create the collection.\n\nIf you do not include this query parameter, the system creates the collection in your \"My Workspace\" workspace.",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Creates a collection using the [Postman Collection v2 schema format](https://schema.postman.com/json/collection/v2.1.0/docs/index.html). Include a `collection` object in the request body that contains the following required properties:\n\n*   `info` — An **object** that contains the following properties:\n    *   `name` — A **string** value that contains the collection's name.\n    *   `schema` — A **string** that contains a URL to the collection's schema. For example, the `https://schema.getpostman.com/collection/v1` URL.\n*   `item` — An **object** that contains the HTTP request and response information.\n    *   `request` — An **object** that contains the collection's request information. For a complete list of values, refer to the `definitions.request` entry in the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json). If you pass an empty object for this value, the system defaults to an untitled GET request.\n\n**Note:**\n\n*   For a complete list of available property values for this endpoint, use the following references available in the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json):\n    *   `info` object — Use the `definitions.info` entry.\n    *   `item` object — Use the `definitions.items` entry.\n*   For all other possible values, refer to the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json)."
+					},
+					"response": []
+				},
+				{
+					"name": "Get a dept",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/departments/20",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"departments",
+								"20"
+							],
+							"query": [
+								{
+									"key": "access_key",
+									"value": "{{accessKey}}",
+									"description": "Optional. A collection's read-only access key. Using this query parameter does not require an API key to call the endpoint.",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Gets information about a collection. For a complete list of this endpoint's possible values, use the [collection.json schema file](https://schema.postman.com/json/collection/v2.1.0/collection.json)."
+					},
+					"response": [
+						{
+							"name": "Get a dept",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/departments/20",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"departments",
+										"20"
+									],
+									"query": [
+										{
+											"key": "access_key",
+											"value": "{{accessKey}}",
+											"description": "Optional. A collection's read-only access key. Using this query parameter does not require an API key to call the endpoint.",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 19 Feb 2024 04:04:46 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "WSGIServer/0.2 CPython/3.12.0"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept, Cookie, origin"
+								},
+								{
+									"key": "Allow",
+									"value": "GET, PUT, PATCH, DELETE, HEAD, OPTIONS"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Length",
+									"value": "294"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "Cross-Origin-Opener-Policy",
+									"value": "same-origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 20,\n    \"levels\": [\n        100\n    ],\n    \"name\": \"Department of Parliament\",\n    \"short_name\": \"DPY\",\n    \"program_duration\": \"8 years\",\n    \"qualification\": \"BTech\",\n    \"created_at\": \"2024-02-19T04:03:51.863132Z\",\n    \"updated_at\": \"2024-02-19T04:03:51.863132Z\",\n    \"department_head\": null,\n    \"level\": [\n        32\n    ],\n    \"courses\": [],\n    \"students\": [],\n    \"lecturers\": []\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete a dept",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/departments/14",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"departments",
+								"14"
+							]
+						},
+						"description": "Deletes a collection."
+					},
+					"response": [
+						{
+							"name": "Delete a dept",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/departments/14",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"departments",
+										"14"
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 19 Feb 2024 04:05:54 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "WSGIServer/0.2 CPython/3.12.0"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept, Cookie, origin"
+								},
+								{
+									"key": "Allow",
+									"value": "GET, PUT, PATCH, DELETE, HEAD, OPTIONS"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Length",
+									"value": "55"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "Cross-Origin-Opener-Policy",
+									"value": "same-origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Department of Theater deleted successfuly\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get all Faculties",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/faculties",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"faculties"
+							],
+							"query": [
+								{
+									"key": "workspace",
+									"value": "{{workspaceId}}",
+									"description": "Optional. A workspace ID.",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Gets all of your [collections](https://www.getpostman.com/docs/collections). The response includes all of your subscribed collections."
+					},
+					"response": [
+						{
+							"name": "Get all Faculties",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/faculties",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"faculties"
+									],
+									"query": [
+										{
+											"key": "workspace",
+											"value": "{{workspaceId}}",
+											"description": "Optional. A workspace ID.",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 19 Feb 2024 04:05:07 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "WSGIServer/0.2 CPython/3.12.0"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept, Cookie, origin"
+								},
+								{
+									"key": "Allow",
+									"value": "GET, POST, HEAD, OPTIONS"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Length",
+									"value": "3402"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "Cross-Origin-Opener-Policy",
+									"value": "same-origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"count\": 19,\n    \"next\": null,\n    \"previous\": null,\n    \"results\": [\n        {\n            \"id\": 21,\n            \"name\": \"School of Humanitarian Studies\",\n            \"short_name\": \"SHS\",\n            \"created_at\": \"2024-02-19T03:58:22.148757Z\",\n            \"updated_at\": \"2024-02-19T03:58:22.148757Z\",\n            \"dean\": null,\n            \"departments\": [\n                20\n            ]\n        },\n        {\n            \"id\": 20,\n            \"name\": \"Faculty of Public Health\",\n            \"short_name\": \"FOPH\",\n            \"created_at\": \"2024-02-14T10:29:54.096906Z\",\n            \"updated_at\": \"2024-02-14T10:29:54.098908Z\",\n            \"dean\": null,\n            \"departments\": [\n                11\n            ]\n        },\n        {\n            \"id\": 19,\n            \"name\": \"Faculty of Nursing\",\n            \"short_name\": \"FON\",\n            \"created_at\": \"2024-02-14T10:29:54.086912Z\",\n            \"updated_at\": \"2024-02-14T10:29:54.090908Z\",\n            \"dean\": null,\n            \"departments\": []\n        },\n        {\n            \"id\": 18,\n            \"name\": \"Faculty of Tourism\",\n            \"short_name\": \"FOT\",\n            \"created_at\": \"2024-02-14T10:29:54.078908Z\",\n            \"updated_at\": \"2024-02-14T10:29:54.080907Z\",\n            \"dean\": null,\n            \"departments\": []\n        },\n        {\n            \"id\": 16,\n            \"name\": \"Faculty of Music\",\n            \"short_name\": \"FOMU\",\n            \"created_at\": \"2024-02-14T10:29:54.060493Z\",\n            \"updated_at\": \"2024-02-14T10:29:54.062489Z\",\n            \"dean\": null,\n            \"departments\": [\n                16\n            ]\n        },\n        {\n            \"id\": 15,\n            \"name\": \"Faculty of Pharmacy\",\n            \"short_name\": \"FOP\",\n            \"created_at\": \"2024-02-14T10:29:54.050585Z\",\n            \"updated_at\": \"2024-02-14T10:29:54.052493Z\",\n            \"dean\": null,\n            \"departments\": []\n        },\n        {\n            \"id\": 14,\n            \"name\": \"Faculty of Social Sciences\",\n            \"short_name\": \"FOSS\",\n            \"created_at\": \"2024-02-14T10:29:54.042587Z\",\n            \"updated_at\": \"2024-02-14T10:29:54.045586Z\",\n            \"dean\": null,\n            \"departments\": [\n                10,\n                9,\n                8\n            ]\n        },\n        {\n            \"id\": 13,\n            \"name\": \"Faculty of Humanities\",\n            \"short_name\": \"FOH\",\n            \"created_at\": \"2024-02-14T10:29:54.032322Z\",\n            \"updated_at\": \"2024-02-14T10:29:54.035330Z\",\n            \"dean\": null,\n            \"departments\": [\n                12\n            ]\n        },\n        {\n            \"id\": 11,\n            \"name\": \"Faculty of Earth Sciences\",\n            \"short_name\": \"FOES\",\n            \"created_at\": \"2024-02-14T10:29:54.012528Z\",\n            \"updated_at\": \"2024-02-14T10:29:54.014530Z\",\n            \"dean\": null,\n            \"departments\": [\n                5\n            ]\n        },\n        {\n            \"id\": 10,\n            \"name\": \"Faculty of Computing\",\n            \"short_name\": \"FOC\",\n            \"created_at\": \"2024-02-14T10:29:54.002195Z\",\n            \"updated_at\": \"2024-02-14T10:29:54.006194Z\",\n            \"dean\": null,\n            \"departments\": [\n                1\n            ]\n        },\n        {\n            \"id\": 9,\n            \"name\": \"Faculty of Agriculture\",\n            \"short_name\": \"FOAG\",\n            \"created_at\": \"2024-02-14T10:29:53.994192Z\",\n            \"updated_at\": \"2024-02-14T10:29:53.996196Z\",\n            \"dean\": null,\n            \"departments\": []\n        },\n        {\n            \"id\": 8,\n            \"name\": \"Faculty of Architecture\",\n            \"short_name\": \"FOAR\",\n            \"created_at\": \"2024-02-14T10:29:53.984777Z\",\n            \"updated_at\": \"2024-02-14T10:29:53.987035Z\",\n            \"dean\": null,\n            \"departments\": []\n        },\n        {\n            \"id\": 7,\n            \"name\": \"Faculty of Business\",\n            \"short_name\": \"FOB\",\n            \"created_at\": \"2024-02-14T10:29:53.975196Z\",\n            \"updated_at\": \"2024-02-14T10:29:53.978695Z\",\n            \"dean\": null,\n            \"departments\": []\n        },\n        {\n            \"id\": 6,\n            \"name\": \"Faculty of Education\",\n            \"short_name\": \"FOED\",\n            \"created_at\": \"2024-02-14T10:29:53.963634Z\",\n            \"updated_at\": \"2024-02-14T10:29:53.965631Z\",\n            \"dean\": null,\n            \"departments\": [\n                7,\n                6\n            ]\n        },\n        {\n            \"id\": 5,\n            \"name\": \"Faculty of Law\",\n            \"short_name\": \"FOL\",\n            \"created_at\": \"2024-02-14T10:29:53.952335Z\",\n            \"updated_at\": \"2024-02-14T10:29:53.956335Z\",\n            \"dean\": null,\n            \"departments\": []\n        },\n        {\n            \"id\": 4,\n            \"name\": \"Faculty of Medicine\",\n            \"short_name\": \"FOM\",\n            \"created_at\": \"2024-02-14T10:29:53.939929Z\",\n            \"updated_at\": \"2024-02-14T10:29:53.942934Z\",\n            \"dean\": null,\n            \"departments\": []\n        },\n        {\n            \"id\": 3,\n            \"name\": \"Faculty of Arts\",\n            \"short_name\": \"FOA\",\n            \"created_at\": \"2024-02-14T10:29:53.931481Z\",\n            \"updated_at\": \"2024-02-14T10:29:53.932929Z\",\n            \"dean\": null,\n            \"departments\": [\n                15,\n                14,\n                13\n            ]\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Faculty of Engineering\",\n            \"short_name\": \"FOE\",\n            \"created_at\": \"2024-02-14T10:29:53.921143Z\",\n            \"updated_at\": \"2024-02-14T10:29:53.925158Z\",\n            \"dean\": null,\n            \"departments\": [\n                17\n            ]\n        },\n        {\n            \"id\": 1,\n            \"name\": \"Faculty of Science\",\n            \"short_name\": \"FOS\",\n            \"created_at\": \"2024-02-14T10:29:53.907907Z\",\n            \"updated_at\": \"2024-02-14T10:29:53.911918Z\",\n            \"dean\": null,\n            \"departments\": [\n                18,\n                4,\n                3,\n                2\n            ]\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get all Departments",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/departments",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"departments"
+							],
+							"query": [
+								{
+									"key": "workspace",
+									"value": "{{workspaceId}}",
+									"description": "Optional. A workspace ID.",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Gets all of your [collections](https://www.getpostman.com/docs/collections). The response includes all of your subscribed collections."
+					},
+					"response": [
+						{
+							"name": "Get all Departments",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/departments",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"departments"
+									],
+									"query": [
+										{
+											"key": "workspace",
+											"value": "{{workspaceId}}",
+											"description": "Optional. A workspace ID.",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Mon, 19 Feb 2024 04:04:58 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "WSGIServer/0.2 CPython/3.12.0"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept, Cookie, origin"
+								},
+								{
+									"key": "Allow",
+									"value": "GET, POST, HEAD, OPTIONS"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Length",
+									"value": "5643"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "Cross-Origin-Opener-Policy",
+									"value": "same-origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"count\": 19,\n    \"next\": null,\n    \"previous\": null,\n    \"results\": [\n        {\n            \"id\": 20,\n            \"levels\": [\n                100\n            ],\n            \"name\": \"Department of Parliament\",\n            \"short_name\": \"DPY\",\n            \"program_duration\": \"8 years\",\n            \"qualification\": \"BTech\",\n            \"created_at\": \"2024-02-19T04:03:51.863132Z\",\n            \"updated_at\": \"2024-02-19T04:03:51.863132Z\",\n            \"department_head\": null,\n            \"level\": [\n                32\n            ],\n            \"courses\": [],\n            \"students\": [],\n            \"lecturers\": []\n        },\n        {\n            \"id\": 18,\n            \"levels\": [\n                100\n            ],\n            \"name\": \"Department of Basic Science\",\n            \"short_name\": \"DBS\",\n            \"program_duration\": \"7 years\",\n            \"qualification\": \"BSc, MSc\",\n            \"created_at\": \"2024-02-17T07:31:27.173540Z\",\n            \"updated_at\": \"2024-02-17T07:36:22.034868Z\",\n            \"department_head\": null,\n            \"level\": [\n                29\n            ],\n            \"courses\": [],\n            \"students\": [],\n            \"lecturers\": []\n        },\n        {\n            \"id\": 17,\n            \"levels\": [\n                600,\n                100,\n                300,\n                200,\n                500\n            ],\n            \"name\": \"Department of Design\",\n            \"short_name\": \"DES\",\n            \"program_duration\": null,\n            \"qualification\": \"PHD\",\n            \"created_at\": \"2024-02-14T10:30:36.571573Z\",\n            \"updated_at\": \"2024-02-14T10:30:36.571573Z\",\n            \"department_head\": null,\n            \"level\": [\n                11,\n                10,\n                9,\n                8,\n                6\n            ],\n            \"courses\": [],\n            \"students\": [],\n            \"lecturers\": []\n        },\n        {\n            \"id\": 16,\n            \"levels\": [],\n            \"name\": \"Department of Music\",\n            \"short_name\": \"MUS\",\n            \"program_duration\": null,\n            \"qualification\": \"PHD\",\n            \"created_at\": \"2024-02-14T10:30:36.551761Z\",\n            \"updated_at\": \"2024-02-14T10:30:36.551761Z\",\n            \"department_head\": null,\n            \"level\": [],\n            \"courses\": [],\n            \"students\": [],\n            \"lecturers\": []\n        },\n        {\n            \"id\": 15,\n            \"levels\": [\n                300,\n                100\n            ],\n            \"name\": \"Department of Film Studies\",\n            \"short_name\": \"FILM\",\n            \"program_duration\": null,\n            \"qualification\": \"PHD\",\n            \"created_at\": \"2024-02-14T10:30:36.516206Z\",\n            \"updated_at\": \"2024-02-16T07:00:41.592301Z\",\n            \"department_head\": null,\n            \"level\": [\n                13,\n                12\n            ],\n            \"courses\": [\n                9,\n                6,\n                2,\n                3\n            ],\n            \"students\": [],\n            \"lecturers\": []\n        },\n        {\n            \"id\": 14,\n            \"levels\": [],\n            \"name\": \"Department of Theater\",\n            \"short_name\": \"THE\",\n            \"program_duration\": null,\n            \"qualification\": \"PHD\",\n            \"created_at\": \"2024-02-14T10:30:36.505602Z\",\n            \"updated_at\": \"2024-02-14T10:30:36.505602Z\",\n            \"department_head\": null,\n            \"level\": [],\n            \"courses\": [],\n            \"students\": [],\n            \"lecturers\": []\n        },\n        {\n            \"id\": 13,\n            \"levels\": [],\n            \"name\": \"Department of Art\",\n            \"short_name\": \"ART\",\n            \"program_duration\": null,\n            \"qualification\": \"PHD\",\n            \"created_at\": \"2024-02-14T10:30:36.494368Z\",\n            \"updated_at\": \"2024-02-14T10:30:36.494368Z\",\n            \"department_head\": null,\n            \"level\": [],\n            \"courses\": [],\n            \"students\": [],\n            \"lecturers\": []\n        },\n        {\n            \"id\": 12,\n            \"levels\": [],\n            \"name\": \"Department of Philosophy\",\n            \"short_name\": \"PHIL\",\n            \"program_duration\": null,\n            \"qualification\": \"BSC\",\n            \"created_at\": \"2024-02-14T10:30:36.467589Z\",\n            \"updated_at\": \"2024-02-14T10:30:36.467589Z\",\n            \"department_head\": null,\n            \"level\": [],\n            \"courses\": [],\n            \"students\": [],\n            \"lecturers\": []\n        },\n        {\n            \"id\": 11,\n            \"levels\": [],\n            \"name\": \"Department of Psychology\",\n            \"short_name\": \"PSY\",\n            \"program_duration\": null,\n            \"qualification\": \"BSC\",\n            \"created_at\": \"2024-02-14T10:30:36.385857Z\",\n            \"updated_at\": \"2024-02-14T10:30:36.385857Z\",\n            \"department_head\": null,\n            \"level\": [],\n            \"courses\": [],\n            \"students\": [],\n            \"lecturers\": []\n        },\n        {\n            \"id\": 10,\n            \"levels\": [],\n            \"name\": \"Department of Sociology\",\n            \"short_name\": \"SOC\",\n            \"program_duration\": null,\n            \"qualification\": \"BSC\",\n            \"created_at\": \"2024-02-14T10:30:36.347872Z\",\n            \"updated_at\": \"2024-02-14T10:30:36.347872Z\",\n            \"department_head\": null,\n            \"level\": [],\n            \"courses\": [],\n            \"students\": [],\n            \"lecturers\": []\n        },\n        {\n            \"id\": 9,\n            \"levels\": [\n                300,\n                200,\n                100\n            ],\n            \"name\": \"Department of Political Science\",\n            \"short_name\": \"POL\",\n            \"program_duration\": null,\n            \"qualification\": \"BSC\",\n            \"created_at\": \"2024-02-14T10:30:36.339874Z\",\n            \"updated_at\": \"2024-02-14T10:30:36.339874Z\",\n            \"department_head\": null,\n            \"level\": [\n                16,\n                15,\n                14\n            ],\n            \"courses\": [\n                6,\n                1,\n                2\n            ],\n            \"students\": [\n                8\n            ],\n            \"lecturers\": []\n        },\n        {\n            \"id\": 8,\n            \"levels\": [],\n            \"name\": \"Department of History\",\n            \"short_name\": \"HIST\",\n            \"program_duration\": null,\n            \"qualification\": \"BSC\",\n            \"created_at\": \"2024-02-14T10:30:36.330874Z\",\n            \"updated_at\": \"2024-02-14T15:24:03.823867Z\",\n            \"department_head\": null,\n            \"level\": [],\n            \"courses\": [\n                7\n            ],\n            \"students\": [],\n            \"lecturers\": []\n        },\n        {\n            \"id\": 7,\n            \"levels\": [],\n            \"name\": \"Department of Education\",\n            \"short_name\": \"EDU\",\n            \"program_duration\": null,\n            \"qualification\": \"BSC\",\n            \"created_at\": \"2024-02-14T10:30:36.302227Z\",\n            \"updated_at\": \"2024-02-14T10:30:36.302227Z\",\n            \"department_head\": null,\n            \"level\": [],\n            \"courses\": [],\n            \"students\": [],\n            \"lecturers\": []\n        },\n        {\n            \"id\": 6,\n            \"levels\": [],\n            \"name\": \"Department of English\",\n            \"short_name\": \"ENG\",\n            \"program_duration\": null,\n            \"qualification\": \"BTECH\",\n            \"created_at\": \"2024-02-14T10:30:36.295218Z\",\n            \"updated_at\": \"2024-02-14T15:24:03.858101Z\",\n            \"department_head\": null,\n            \"level\": [],\n            \"courses\": [\n                12,\n                4\n            ],\n            \"students\": [\n                3\n            ],\n            \"lecturers\": [\n                3\n            ]\n        },\n        {\n            \"id\": 5,\n            \"levels\": [],\n            \"name\": \"Department of Meteorology\",\n            \"short_name\": \"MET\",\n            \"program_duration\": null,\n            \"qualification\": \"BTECH\",\n            \"created_at\": \"2024-02-14T10:30:36.277219Z\",\n            \"updated_at\": \"2024-02-14T10:30:36.277219Z\",\n            \"department_head\": null,\n            \"level\": [],\n            \"courses\": [],\n            \"students\": [\n                2,\n                4,\n                5,\n                7\n            ],\n            \"lecturers\": [\n                2,\n                4,\n                5,\n                7\n            ]\n        },\n        {\n            \"id\": 4,\n            \"levels\": [],\n            \"name\": \"Department of Chemistry\",\n            \"short_name\": \"CHEM\",\n            \"program_duration\": null,\n            \"qualification\": \"BTECH\",\n            \"created_at\": \"2024-02-14T10:30:36.247478Z\",\n            \"updated_at\": \"2024-02-14T15:24:03.808771Z\",\n            \"department_head\": null,\n            \"level\": [],\n            \"courses\": [\n                5\n            ],\n            \"students\": [],\n            \"lecturers\": []\n        },\n        {\n            \"id\": 3,\n            \"levels\": [],\n            \"name\": \"Department of Physics\",\n            \"short_name\": \"PHYS\",\n            \"program_duration\": null,\n            \"qualification\": \"BTECH\",\n            \"created_at\": \"2024-02-14T10:30:36.239056Z\",\n            \"updated_at\": \"2024-02-14T11:11:35.535433Z\",\n            \"department_head\": null,\n            \"level\": [],\n            \"courses\": [\n                22,\n                20,\n                19,\n                21,\n                9,\n                10,\n                11,\n                12,\n                6,\n                7,\n                8,\n                14,\n                15,\n                16,\n                17,\n                18,\n                13,\n                1,\n                3,\n                2,\n                5,\n                4\n            ],\n            \"students\": [\n                6\n            ],\n            \"lecturers\": [\n                6\n            ]\n        },\n        {\n            \"id\": 2,\n            \"levels\": [],\n            \"name\": \"Department of Mathematics\",\n            \"short_name\": \"MATH\",\n            \"program_duration\": null,\n            \"qualification\": \"BTECH\",\n            \"created_at\": \"2024-02-14T10:30:36.228955Z\",\n            \"updated_at\": \"2024-02-14T15:24:04.012263Z\",\n            \"department_head\": null,\n            \"level\": [],\n            \"courses\": [\n                19,\n                11,\n                15,\n                3\n            ],\n            \"students\": [],\n            \"lecturers\": []\n        },\n        {\n            \"id\": 1,\n            \"levels\": [],\n            \"name\": \"Department of Computer Science\",\n            \"short_name\": \"CS\",\n            \"program_duration\": null,\n            \"qualification\": \"BTECH\",\n            \"created_at\": \"2024-02-14T10:30:36.202722Z\",\n            \"updated_at\": \"2024-02-14T15:24:04.029618Z\",\n            \"department_head\": null,\n            \"level\": [],\n            \"courses\": [\n                20,\n                10,\n                13,\n                14,\n                17,\n                18,\n                16,\n                1,\n                2\n            ],\n            \"students\": [\n                1\n            ],\n            \"lecturers\": [\n                1\n            ]\n        }\n    ]\n}"
+						}
+					]
+				}
+			],
+			"description": "The `/collections` endpoints let you manage your [collections](https://learning.postman.com/docs/sending-requests/intro-to-collections/)."
+		},
+		{
+			"name": "Artifacts",
+			"item": [
+				{
+					"name": "Add Session",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"2023-2024\",\r\n    \"start_date\": \"2024-01-01\",\r\n    \"end_date\": \"2024-05-31\",\r\n    \"is_active\": true\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/sessions/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"sessions",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Session",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"2023-2024\",\r\n    \"start_date\": \"2024-01-01\",\r\n    \"end_date\": \"2024-05-31\",\r\n    \"is_active\": true\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/sessions/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"sessions",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Semester",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Second Semester\",\r\n    \"start_date\": \"2024-01-01\",\r\n    \"end_date\": \"2024-05-31\",\r\n    \"is_active\": true,\r\n    \"session\": 1\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/semesters/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"semesters",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Semster",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"First Semester\",\r\n    \"start_date\": \"2024-01-01\",\r\n    \"end_date\": \"2024-05-31\",\r\n    \"is_active\": true,\r\n    \"session\": \"2023-2024\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/semesters/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"semesters",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

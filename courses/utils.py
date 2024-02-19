@@ -7,6 +7,7 @@ from school_administration.models import Department, Level
 from school_artifacts.models import Semester
 from rest_framework.response import Response
 from rest_framework import status
+from django.shortcuts import get_object_or_404
 
 
 # @transaction.atomic
@@ -80,13 +81,13 @@ class ProcessCourse:
     def __init__(self, file):
         self.file = file
 
-    def read_csv_into_key_values(self):
+    def create_courses(self):
         """
         Read the CSV file and return a dictionary with the key as the course name and the value as the course details.
         """
-        departments = {}
         decoded_file = self.file.read().decode("utf-8")
         reader = csv.DictReader(io.StringIO(decoded_file))
+        course_to_create = []
 
         for row in reader:
             course_details = {
@@ -96,12 +97,17 @@ class ProcessCourse:
                 "course_unit": row.get("course_unit", None),
                 "course_credit": row.get("course_credit", None),
                 "mark": row.get("mark", None),
-                "course_status": row.get("course_status", None),
+                "course_status": row.get("course_status", False),
             }
-            department = row["department"]
-            departments.setdefault(department, []).append(course_details)
 
-        return departments
+            course_to_create.append(Course(**course_details))
+
+        Course.objects.bulk_create(course_to_create)
+
+        return Response(
+            f"{len(course_to_create)} courses created successfully.",
+            status=status.HTTP_201_CREATED,
+        )
 
     def proces_data(self):
         departments = self.read_csv_into_key_values()
@@ -154,3 +160,124 @@ class ProcessCourse:
             return False
         else:
             raise ValueError("Invalid boolean value")
+
+    def department_courses(self):
+        decoded_file = self.file.read().decode("utf-8")
+        reader = csv.DictReader(io.StringIO(decoded_file))
+        # department_courses = {}
+        errors = []
+
+        for row in reader:
+            department_name = row.get("department", None)
+            course_name = row.get("course_name", None)
+            level = row.get("level", None)
+            # semester = row.get("semester", None)
+
+            # Check if department name and course name are provided
+            if not department_name or not course_name:
+                errors.append({"error": "Department name or course name is missing."})
+                continue
+                
+            # Get or create the course
+            try:
+                
+                # course_obj, created = Course.objects.get_or_create(
+                #     course_name=course_name,
+                #     defaults={
+                #         "course_code": course_name,
+                #         "course_description": f"A default description for {course_name}",
+                #         "course_unit": 0,
+                #     },
+                # )
+                course_obj = get_object_or_404(Course, course_name=course_name)
+                # Get or create the level
+                level_obj, created = Level.objects.get_or_create(level=level)
+
+                # get the semester
+                # semseter = Semester.objects.filter(name__iexact=semester).first()
+
+                # Get the department
+                department_obj = Department.objects.filter(name__iexact=department_name).first()
+                if not department_obj:
+                    errors.append({"error": f"Department '{department_name}' not found."})
+                    continue
+                
+                # Add the course to the department
+                department_obj.courses.add(course_obj)
+                department_obj.level.add(level_obj)
+                department_obj.save()
+            except IntegrityError:
+                errors.append({"error": f"Course '{course_name}' already exists for {department_name}."})
+                continue
+            except Exception as e:
+                errors.append({"error": f"Error processing course '{course_name}': {e}"})
+                continue
+
+        if errors:
+            
+            return Response(
+                {"message": f"{len(row)} processed.", "errors": errors},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        else:
+            
+            department_course_counts = {
+            department.name: department.courses.count() for department in Department.objects.all()
+        }
+            return Response(
+                {"message": f"{department_course_counts} Data processed successfully."},
+                status=status.HTTP_200_OK,
+            )
+
+class ProcessDepartmentCourse:
+    def __init__(self, file, department_id):
+        self.file = file
+        self.department_id = department_id
+
+    def department_courses(self):
+        decoded_file = self.file.read().decode("utf-8")
+        reader = csv.DictReader(io.StringIO(decoded_file))
+        errors = []
+
+        for row in reader:
+            course_name = row.get("course_name", None)
+            level = row.get("level", None)
+
+            if not course_name:
+                errors.append({"error": "Course name is missing."})
+                continue
+
+            try:
+                course_obj = Course.objects.get(course_name=course_name)
+                level_obj= Level.objects.get(level=level)
+
+                department_obj = Department.objects.get(id=self.department_id)
+
+                existing_course_ids = department_obj.courses.values_list("id", flat=True)
+                new_course_id = course_obj.id
+
+                if new_course_id not in existing_course_ids:
+                    department_obj.courses.add(course_obj)
+
+                # department_obj.level.add(level_obj)
+                department_obj.save()
+            except IntegrityError:
+                errors.append({"error": f"Course '{course_name}' already exists for the specified department."})
+                continue
+            except Exception as e:
+                errors.append({"error": f"Error processing course '{course_name}': {e}"})
+                continue
+
+        if errors:
+            return Response(
+                {"message": f"{len(row)} processed.", "errors": errors},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        else:
+            department_course_counts = {
+                department.name: department.courses.count() for department in Department.objects.all()
+            }
+            return Response(
+                {"message": f"{department_course_counts} Data processed successfully."},
+                status=status.HTTP_200_OK,
+            )

@@ -123,6 +123,7 @@ class Student(models.Model):
         on_delete=models.SET_NULL,
         related_name="student_level",
     )
+    semester = models.ForeignKey("school_artifacts.Semester", related_name="student", on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name} - {self.matric_no}"

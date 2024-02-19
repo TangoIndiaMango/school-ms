@@ -26,7 +26,7 @@ class ProcessFaculty:
 
         for row in reader:
             faculty_name = row.get("name", None)
-            print(faculty_name)
+            # print(faculty_name)
             if faculty_name:
                 faculty_details = {
                     "name": faculty_name,

@@ -139,7 +139,7 @@ class ProcessUserRoles:
                     role_data["student_department"] = department
                     role_data["level"] = level
                     role_data["user"] = user
-                    print(role_data)
+                    # print(role_data)
 
                     role_instance = self.role_model.objects.create(**role_data)
 
@@ -164,8 +164,6 @@ class ProcessUserRoles:
         
     def process_lecturer_data(self, file):
         roles = self.read_csv_into_key_values(file)
-        print(roles)
-        # return print([role["lecturer_department"] for role in roles])
         created_roles = []
         errors = []
 
@@ -174,12 +172,11 @@ class ProcessUserRoles:
                 try:
                     #  create the customUser
                     user_data = role_data.pop("user")
-                    # print(user_data)
+                    
                     user_serializer = CustomUserSerializer(data=user_data)
                     if user_serializer.is_valid():
                         user = user_serializer.save()
-                        print(user)
-
+                    
                         # Get department
                         department_name = role_data.get("lecturer_department")
                         if department_name:
@@ -197,7 +194,6 @@ class ProcessUserRoles:
                         role_data["lecturer_department"] = department
                         role_data["level"] = level
                         role_data["user"] = user
-                        print(role_data)
 
                         role_instance = self.role_model.objects.create(**role_data)
 
@@ -234,21 +230,28 @@ class ProcessUserRoles:
                 # Create a user and get the created user
                 user = self.create_user(request_data)
 
-                department_name = request_data.get("student_department", None)
-                _department = get_object_or_404(Department, name=department_name)
-                _level = get_object_or_404(Level, level=request_data.get("level"))
-                if not _department:
+                department = request_data.get("student_department", None)
+                _department = get_object_or_404(Department, id=department)
+                # get the department levels
+                dept_levels = _department.level.all()
+                # check if the id of the level is in that level
+                level_id = request_data.get("level")
+                if level_id not in [level.id for level in dept_levels]:
                     return None, Response(
-                        {
-                            "error": f"{department_name} not found. Please create the department and upload again."
-                        },
+                        {"error": f"Level {level_id} not found in {_department.name}"},
                         status=status.HTTP_400_BAD_REQUEST,
                     )
+                
+                #  get level
+                _level = dept_levels.get(id=level_id)
+                print(_level)
+                # _level = get_object_or_404(Level, level=request_data.get("level"))
+                
 
                 role_data = {
                     "user": user,
                     "student_department": _department,
-                    "level_id": _level.id,
+                    "level": _level 
                 }
 
                 if self.role_field_name in request_data:
@@ -258,7 +261,7 @@ class ProcessUserRoles:
                 role_instance = self.role_model.objects.create(**role_data)
 
                 # assign student or lecturer to department
-                _department.students.add(_department)
+                _department.students.add(role_instance)
 
                 serialized = self.role_serializer(role_instance)
                 role_instance.save()
