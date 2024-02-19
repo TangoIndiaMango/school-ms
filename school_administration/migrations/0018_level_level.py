@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='level',
             name='level',
-            field=models.IntegerField(default=100, unique=True),
+            field=models.IntegerField(default=100),
             preserve_default=False,
         ),
     ]
