@@ -23,17 +23,17 @@ class Course(models.Model):
 
 class CourseRegistration(models.Model):
     student = models.ForeignKey("users.Student", on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    courses = models.ManyToManyField(Course, related_name="courses")
     approved = models.BooleanField(default=False)
     semester = models.ForeignKey("school_artifacts.Semester", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return "{}" - "{}".format(self.student.matric_no, self.course.course_code)
+        return "{}" - "{}".format(self.student.matric_no, self.semester.semester_name)
 
     class Meta:
-        unique_together = ['student', 'course', 'semester']
+        unique_together = ['student', 'semester']
         ordering = ("-created_at",)
 
 

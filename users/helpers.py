@@ -230,21 +230,28 @@ class ProcessUserRoles:
                 # Create a user and get the created user
                 user = self.create_user(request_data)
 
-                department_name = request_data.get("student_department", None)
-                _department = get_object_or_404(Department, name=department_name)
-                _level = get_object_or_404(Level, level=request_data.get("level"))
-                if not _department:
+                department = request_data.get("student_department", None)
+                _department = get_object_or_404(Department, id=department)
+                # get the department levels
+                dept_levels = _department.level.all()
+                # check if the id of the level is in that level
+                level_id = request_data.get("level")
+                if level_id not in [level.id for level in dept_levels]:
                     return None, Response(
-                        {
-                            "error": f"{department_name} not found. Please create the department and upload again."
-                        },
+                        {"error": f"Level {level_id} not found in {_department.name}"},
                         status=status.HTTP_400_BAD_REQUEST,
                     )
+                
+                #  get level
+                _level = dept_levels.get(id=level_id)
+                print(_level)
+                # _level = get_object_or_404(Level, level=request_data.get("level"))
+                
 
                 role_data = {
                     "user": user,
                     "student_department": _department,
-                    "level_id": _level.id,
+                    "level": _level 
                 }
 
                 if self.role_field_name in request_data:

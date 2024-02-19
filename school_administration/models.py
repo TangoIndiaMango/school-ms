@@ -40,7 +40,7 @@ class Department(models.Model):
         related_name="department_head",
     )
     level = models.ManyToManyField(
-        "school_administration.Level",
+        "school_administration.Level", related_name="department", blank=True
     )
     courses = models.ManyToManyField("courses.Course", related_name="department", blank=True)
     students = models.ManyToManyField("users.Student", related_name="department", blank=True)

@@ -229,82 +229,55 @@ class ProcessCourse:
                 status=status.HTTP_200_OK,
             )
 
+class ProcessDepartmentCourse:
+    def __init__(self, file, department_id):
+        self.file = file
+        self.department_id = department_id
 
-# class ProcessCourse:
-#     def __init__(self, file):
-#         self.file = file
+    def department_courses(self):
+        decoded_file = self.file.read().decode("utf-8")
+        reader = csv.DictReader(io.StringIO(decoded_file))
+        errors = []
 
-#     def read_csv_into_key_values(self):
-#         """
-#         Read the CSV file and return a dictionary with the key as the course name and the value as the course details.
-#         """
-#         departments = {}
-#         decoded_file = self.file.read().decode("utf-8")
-#         reader = csv.DictReader(io.StringIO(decoded_file))
+        for row in reader:
+            course_name = row.get("course_name", None)
+            level = row.get("level", None)
 
-#         for row in reader:
-#             course_details = {
-#                 "course_name": row.get("course_name", None),
-#                 "course_code": row.get("course_code", None),
-#                 "course_description": row.get("course_description", None),
-#                 "course_unit": row.get("course_unit", None),
-#                 "course_credit": row.get("course_credit", None),
-#                 "mark": row.get("mark", None),
-#                 "course_status": row.get("course_status", None),
-#             }
-#             department = row["department"]
-#             departments.setdefault(department, []).append(course_details)
+            if not course_name:
+                errors.append({"error": "Course name is missing."})
+                continue
 
-#         return departments
+            try:
+                course_obj = Course.objects.get(course_name=course_name)
+                level_obj= Level.objects.get(level=level)
 
-#     def proces_data(self):
-#         departments = self.read_csv_into_key_values()
-#         errors = []
+                department_obj = Department.objects.get(id=self.department_id)
 
-#         for department, courses in departments.items():
-#             try:
-#                 department_obj = Department.objects.get(name__iexact=department)
+                existing_course_ids = department_obj.courses.values_list("id", flat=True)
+                new_course_id = course_obj.id
 
-#                 created_courses = []
+                if new_course_id not in existing_course_ids:
+                    department_obj.courses.add(course_obj)
 
-#                 for course in courses:
-#                     course_status = self.convert_to_bool(course["course_status"])
-#                     course_obj = Course.objects.create(
-#                         course_name=course["course_name"],
-#                         course_code=course["course_code"],
-#                         course_description=course["course_description"],
-#                         course_unit=course["course_unit"],
-#                         course_credit=course["course_credit"],
-#                         mark=course["mark"],
-#                         course_status=course_status,
-#                     )
-#                     created_courses.append(course_obj)
+                # department_obj.level.add(level_obj)
+                department_obj.save()
+            except IntegrityError:
+                errors.append({"error": f"Course '{course_name}' already exists for the specified department."})
+                continue
+            except Exception as e:
+                errors.append({"error": f"Error processing course '{course_name}': {e}"})
+                continue
 
-#                 department_obj.courses.set(created_courses)
-
-#             except Department.DoesNotExist:
-#                 errors.append(f"Department '{department}' not found.")
-#                 continue
-#             except IntegrityError:
-#                 errors.append(f"Course '{course['course_name']}' already exists.")
-#                 continue
-#             except Exception as e:
-#                 errors.append(f"Error processing course '{course['course_name']}': {e}")
-
-#         if errors:
-#             return Response({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
-#         else:
-#             return Response(
-#                 {"message": "Data processed successfully."},
-#                 status=status.HTTP_200_OK,
-#             )
-
-#     def convert_to_bool(self, value):
-#         if isinstance(value, bool):
-#             return value
-#         elif value.lower() in ["true", "t", "yes", "y"]:
-#             return True
-#         elif value.lower() in ["false", "f", "no", "n"]:
-#             return False
-#         else:
-#             raise ValueError("Invalid boolean value")
+        if errors:
+            return Response(
+                {"message": f"{len(row)} processed.", "errors": errors},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        else:
+            department_course_counts = {
+                department.name: department.courses.count() for department in Department.objects.all()
+            }
+            return Response(
+                {"message": f"{department_course_counts} Data processed successfully."},
+                status=status.HTTP_200_OK,
+            )

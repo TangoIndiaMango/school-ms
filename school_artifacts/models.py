@@ -6,7 +6,7 @@ class Session(models.Model):
     start_date = models.DateField()
     is_active = models.BooleanField(default=False)
     end_date = models.DateField()
-    semesters = models.ManyToManyField("school_artifacts.Semester", related_name="sessions")
+    semesters = models.ManyToManyField("school_artifacts.Semester", related_name="session", blank=True)
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

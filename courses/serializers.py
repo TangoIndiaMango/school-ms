@@ -37,16 +37,39 @@ class GetCourseByDepartmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = "__all__"
+        
+
+class DepartmentCoursesSerializer(serializers.ModelSerializer):
+    department = serializers.CharField(write_only=True)
+    department_name = serializers.SerializerMethodField("get_departemnt")
+    courses = serializers.CharField(read_only=True)
+    level = serializers.CharField(write_only=True)
+    levels = serializers.SerializerMethodField("get_levels")
+
+    class Meta:
+        model = Course
+        fields = "__all__"
+        
+    def get_departemnt(self, obj):
+        if obj.department.all():
+            return obj.department.all().first().name
+        return None
+    
+    def get_courses(self, obj):
+        return [{"course_code": course.course_code, "course_name": course.course_name} for course in obj.courses.all()]
+    
+    def get_levels(self, obj):
+        
+        return obj.level.all().values_list("level", flat=True)
 
 
-# class GetCourseByLevelSerializer(serializers.ModelSerializer):
-#     department_name = serializers.CharField(read_only=True)
-#     course_name = serializers.CharField(read_only=True)
-#     level = serializers.CharField(read_only=True)
+class GetCourseByLevelSerializer(serializers.ModelSerializer):
+    courses = serializers.CharField(read_only=True)
+    level = serializers.CharField(read_only=True)
 
-#     class Meta:
-#         model = Course
-#         fields = "__all__"
+    class Meta:
+        model = Course
+        fields = "__all__"
 
 
 

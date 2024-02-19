@@ -67,7 +67,10 @@ class CreateFacultyView(ModelViewSet):
                 return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
             except IntegrityError as e:
                 return Response(
-                    {"error": f"{request.data['name']} exist already, update if you need to"}, status=status.HTTP_409_CONFLICT
+                    {
+                        "error": f"{request.data['name']} exist already, update if you need to"
+                    },
+                    status=status.HTTP_409_CONFLICT,
                 )  # conflict error
             except Exception as e:
                 return Response(
@@ -112,33 +115,42 @@ class CreateDepartmentView(ModelViewSet):
                 return response
             except Exception as e:
                 return Response(
-                    {"error": str(e)},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                    {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
         else:
             # single creation
             # get faculty name
-            faculty_name = str(request.data.get("faculty"))
+            faculty_id = request.data.get("faculty")
             # get faculty object
-            faculty = Faculty.objects.get(name=faculty_name)
-            # add faculty to request data
-            request.data["faculty"] = faculty.id
+            try:
+                faculty = Faculty.objects.get(id=faculty_id)
+            except Faculty.DoesNotExist:
+                return Response(
+                    {"error": f"Faculty {faculty_id} does not exist"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+
 
             # levels we do the same for courses, students, lecturers
             levels_input = request.data.get("level")
+            #  get currrent year
+            current_year = datetime.now().year
+            department_unique_name = generate_random_id(request.data["short_name"], current_year)
 
-            if isinstance(levels_input, int):
-                levels_input = [str(levels_input)]
-            elif isinstance(levels_input, str):
-                levels_input = [
-                    name.strip() for name in levels_input.split(",") if name.strip()
-                ]
+            # print(department_unique_name)
+            if not isinstance(levels_input, list):
+                levels_input = [levels_input]
+            # elif isinstance(levels_input, str):
+            #     levels_input = [
+            #         name.strip() for name in levels_input.split(",") if name.strip()
+            #     ]
+            # print(levels_input)
 
             level_ids = []
             if levels_input:
                 for level_name in levels_input:
                     try:
-                        level = Level.objects.get(level=level_name)
+                        level, _ = Level.objects.get_or_create(name=department_unique_name, level=level_name)
                         level_ids.append(level.id)
                     except Level.DoesNotExist:
                         return Response(
@@ -151,19 +163,15 @@ class CreateDepartmentView(ModelViewSet):
             serializer = self.serializer_class(data=request.data)
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
-            # headers = self.get_success_headers(serializer.data)
+            faculty.departments.add(serializer.data["id"])  # add department to faculty
+            level.department.add(serializer.data["id"])  # add department to level
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @transaction.atomic()
     def update(self, request, *args, **kwargs):
 
         instance = self.get_object()
-        faculty_name = request.data.get("faculty")
-        # get faculty object
-        faculty = Faculty.objects.get(name=faculty_name)
-        # add faculty to request data
-        request.data["faculty"] = faculty.id
-
+        
         serializer = self.serializer_class(instance, data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)  # Use perform_update instead of self.update
@@ -187,23 +195,29 @@ class LevelViewSet(ModelViewSet):
         IsAdminUser,
     )
 
+    @transaction.atomic()
     def create(self, request, *args, **kwargs):
         department_id = request.data.get("department_id")
-        department = Department.objects.get(id=department_id)
+        try:
+            department = Department.objects.get(id=department_id)
+        except Department.DoesNotExist:
+            return Response(
+                {"error": f"Department with id {department_id} does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
         #  get currrent year
         current_year = datetime.now().year
         department_unique_name = generate_random_id(department.short_name, current_year)
-    
+
         #  we create a unique name for that department
         request.data["name"] = department_unique_name
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        
+        serializer.save()
+
         #  so we then add the level to the department
         department.level.add(serializer.data["id"])
         
-        headers = self.get_success_headers(serializer.data)
-        return Response(
-            serializer.data, status=status.HTTP_201_CREATED, headers=headers
-        )
+        updated_data = { **serializer.data, "department": department.name}
+
+        return Response(updated_data, status=status.HTTP_201_CREATED)
