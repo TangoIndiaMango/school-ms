@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='level',
             name='name',
-            field=models.CharField(max_length=100, unique=True, null=True),
+            field=models.CharField(max_length=100, unique=True),
             preserve_default=False,
         ),
         migrations.RunPython(generate_default_level_names),
