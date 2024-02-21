@@ -9,6 +9,8 @@ from users.views import (
     # ResetPasswordView,)
     StudentCreateView,
     LecturerCreateView,
+    UploadLecturerView,
+    UploadStudentView,
 )
 
 router = DefaultRouter(trailing_slash=False)
@@ -22,6 +24,8 @@ urlpatterns = [
     path("user/", CurrentUser.as_view(), name="logged-in-user"),
     path("student/<str:pk>/", StudentCreateView.as_view(), name="student"),
     path("lecturer/<str:pk>/", LecturerCreateView.as_view(), name="lecturer"),
+    path('upload-student/', UploadStudentView.as_view(), name='upload_student'),
+    path('upload-lecturer/', UploadLecturerView.as_view(), name='upload_lecturer'),
     # path("reset-password/", ResetPasswordView.as_view(), name="reset-password"),
     # path("student-list/", StudentCreateView.as_view(), name="student-list")
 ]

@@ -10,6 +10,25 @@ from django.db import IntegrityError, transaction
 
 from users.models import Lecturer
 
+def generate_random_id(department_code, year):
+    """
+    Generate a unique 4-digit matric number for a student.
+
+    :param department_code: Code of the department
+    :param year: Year of enrollment
+    :param existing_numbers: A set of already existing numbers for the department and year
+    :return: A unique matric number
+    """
+
+    try:
+        number = str(random.randint(0, 9999)).zfill(4)
+        rand_id = f"{department_code}/{year}/{number}"
+
+        return rand_id
+    except:
+        raise Exception(
+            "Unable to generate a unique matric number after several attempts."
+        )
 
 class ProcessFaculty:
     def __init__(self, file):
@@ -86,45 +105,10 @@ class ProcessFaculty:
             )
 
 
-def generate_random_id(department_code, year):
-    """
-    Generate a unique 4-digit matric number for a student.
-
-    :param department_code: Code of the department
-    :param year: Year of enrollment
-    :param existing_numbers: A set of already existing numbers for the department and year
-    :return: A unique matric number
-    """
-
-    try:
-        number = str(random.randint(0, 9999)).zfill(4)
-        rand_id = f"{department_code}/{year}/{number}"
-
-        return rand_id
-    except:
-        raise Exception(
-            "Unable to generate a unique matric number after several attempts."
-        )
-
-    # existing_number in param
-    # max_attempts = 10000  # Maximum attempts to find a unique number
-    # for _ in range(max_attempts):
-    #     number = str(random.randint(0, 9999)).zfill(4)
-    #     rand_id = f"{department_code}/{year}/{number}"
-    #     if rand_id not in existing_numbers:
-    #         return rand_id
-
-    # raise Exception("Unable to generate a unique matric number after several attempts.")
-
-
-import csv
-import io
-from django.db.models import Q
-from .models import Faculty, Department, Level
-
 class ProcessDepartments:
-    def __init__(self, file):
+    def __init__(self, file, faculty_id):
         self.file = file
+        self.faculty_id = faculty_id
 
     def read_csv_into_key_values(self):
         """
@@ -142,41 +126,23 @@ class ProcessDepartments:
                 "qualification": row["qualification"],
                 "level": levels,
             }
-            faculty = row["faculty"]
-            faculties.setdefault(faculty, []).append(dept_details)
+            row["faculty"] = self.faculty_id
+            faculties.setdefault(row["faculty"], []).append(dept_details)
 
         return faculties
 
     def process_data(self):
         faculties = self.read_csv_into_key_values()
-        level_ids = {}
         errors = []
+        print("THESE ARE FACULTIES",faculties)
 
         for faculty, depts in faculties.items():
             try:
-                faculty_obj = Faculty.objects.get(name__iexact=faculty)
+                faculty_obj = Faculty.objects.get(id=faculty)
             except Faculty.DoesNotExist:
-                errors.append(f"Faculty '{faculty}' not found.")
+                errors.append(f"Faculty '{faculty.name}' not found.")
                 continue
-
-            dept_objs = []
-
             for dept in depts:
-                _level_ids = []
-                levels = dept.get("level", None)
-                level_to_get = Q()
-                for l in levels:
-                    if level_ids.get(l, None):
-                        _level_ids.append(level_ids[l])
-                    else:
-                        level_to_get |= Q(level__iexact=l)
-
-                if level_to_get:
-                    levels = Level.objects.filter(level_to_get)
-                    for l in levels:
-                        level_ids[l.level] = l.id
-                        _level_ids.append(l.id)
-                dept["level"] = _level_ids
 
                 try:
                     department_obj, created = Department.objects.get_or_create(
@@ -189,19 +155,28 @@ class ProcessDepartments:
                     if not created:
                         errors.append(f"Department '{dept['name']}' already exists.")
                         continue
+                    faculty_obj.departments.add(department_obj)
 
-                    dept_objs.append(department_obj)
+                    
+                    # if not isinstance(dept["level"], list):
+                    #     dept["level"] = [dept["level"]]
+                    print("THESE ARE LEVELS", dept["level"])
+                    if dept["level"]:
+                        for level in dept["level"]:
+                            department_unique_name = generate_random_id(dept["short_name"], level)
+                            try:
+                                level_obj, _ = Level.objects.get_or_create(
+                                    name=department_unique_name,
+                                    defaults={"level": level},
+                                )
+                                dept["level"] = level_obj.id
+                                department_obj.level.add(level_obj)
+                            except Exception as e:
+                                errors.append(f"Error getting level '{dept['level']}': {e}")
+                            print("Just finished", level)
                 except IntegrityError as e:
                     errors.append(f"Error processing department '{dept['name']}': {e}")
                     continue
-
-            try:
-                for i, deptObj in enumerate(dept_objs):
-                    deptObj.level.set(depts[i]["level"])
-                faculty_obj.departments.set([i.id for i in dept_objs])
-            except IntegrityError as e:
-                errors.append(f"Error setting departments for faculty '{faculty}': {e}")
-                continue
 
         if errors:
             return Response({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)

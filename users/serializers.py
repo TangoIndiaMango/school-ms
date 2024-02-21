@@ -50,15 +50,12 @@ class UpdatePasswordSerializer(serializers.Serializer):
 class StudentSerializer(serializers.ModelSerializer):
     user = serializers.CharField(read_only=True)
     user_id = serializers.CharField(required=True, write_only=True)
-    student_department = serializers.CharField(read_only=True)
     student_department_id = serializers.CharField(required=True, write_only=True)
-    level = serializers.CharField(read_only=True)
     level_id = serializers.CharField(required=True, write_only=True)
 
     class Meta:
         model = Student
         fields = "__all__"
-        depth = 1
 
 
 class UpdateStudentSerializer(CustomUserSerializer):
