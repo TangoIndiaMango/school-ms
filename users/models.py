@@ -18,7 +18,7 @@ ROLE_CHOICES = (
     ("admin", "Admin"),
 )
 
-GENDER_CHOICES = (("male", "Male"), ("female", "Female"))
+GENDER_CHOICES = (("Male", "Male"), ("Female", "Female"))
 
 
 class CustomUserManager(BaseUserManager):
@@ -137,13 +137,6 @@ class Lecturer(models.Model):
     designation = models.CharField(max_length=30, blank=True, null=True)
     qualification = models.CharField(max_length=30, blank=True, null=True)
     courses = models.ForeignKey("courses.Course", blank=True, related_name="lecturer", on_delete=models.SET_NULL, null=True)
-    level = models.ForeignKey(
-        "school_administration.Level",
-        null=True, 
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="lecturer_level",
-    )
     lecturer_department = models.ForeignKey(
         "school_administration.Department",
         null=True,

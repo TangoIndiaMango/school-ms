@@ -1,7 +1,11 @@
 import datetime
+
+from django.http import Http404
 from school_administration.models import Department
 from schoolms.authentication_middleware import IsAuthenticatedCustom
 from users.helpers import (
+    ProcessCreateLecturer,
+    ProcessCreateStudents,
     ProcessUserRoles,
     get_all_roles,
     get_role,
@@ -178,50 +182,47 @@ class StudentCreateView(APIView):
 
     @transaction.atomic()
     def post(self, request, *args, **kwargs):
-        # Call the process_data method to process data from the uploaded file
-        role_model = Student  # or Lecturer, depending on the role model
-        role_serializer = (
-            StudentSerializer  # or LecturerSerializer, depending on the role
-        )
+        student_department_id = request.data.get("department")
+        level_id = request.data.get("level")
+        password = request.data.get("password")
+        if student_department_id is None or level_id is None:
+            return Response(
+                {"message": "Department and level are required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        # Get department and level
+        try:
+            department = get_object_or_404(Department, id=student_department_id)
+            level = get_object_or_404(department.level.all(), id=level_id)
+        except Http404:
+            return Response(
+                {"message": "Department or level not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        # Create student using process
+        # Process uploaded student data
+        role_model = Student
+        role_serializer = StudentSerializer
         role_field_name = "matric_no"
-        processor = ProcessUserRoles(role_model, role_serializer, role_field_name)
-        # we get a file upload
-        if request.FILES:
-            file = request.FILES["student_file"]
-            student_serialized, student_error_response = processor.process_student_data(
-                file
-            )
-            if student_error_response:
-                return Response(
-                    {
-                        "message": f" Students created successfully.",
-                        "errors": student_error_response,
-                    },
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            return Response(
-                {
-                    "message": f" {len(student_serialized.data)} Students created successfully.",
-                },
-                status=status.HTTP_200_OK,
-            )
 
-        else:
-            # Call the create_single_user_and_role method to create a single student user and role
-            student_serialized, student_error_response = (
-                processor.create_single_student_and_role(request.data)
-            )
+        processor = ProcessCreateStudents(
+            role_model, role_serializer, role_field_name, department, level, password
+        )
+        student_serialized, student_error_response = (
+            processor.create_single_student_and_role(request.data)
+        )
 
-            if student_error_response:
-                return student_error_response
+        if student_error_response:
+            return student_error_response
 
-            return Response(
-                {
-                    "message": "Student created successfully.",
-                    "data": student_serialized.data,
-                },
-                status=status.HTTP_200_OK,
-            )
+        return Response(
+            {
+                "message": "Student created successfully.",
+                "data": student_serialized.data,
+            },
+            status=status.HTTP_200_OK,
+        )
 
     # @action(detail=False, methods=['get'], url_path='get-by-matric/(?P<matric_no>[^/.]+)')
     # def get_by_matric(self, request, matric_no=None):
@@ -262,6 +263,112 @@ class StudentCreateView(APIView):
         )
 
 
+class UploadStudentView(APIView):
+    permission_classes = [IsAuthenticatedCustom, IsAdminUser]
+
+    @transaction.atomic()
+    def post(self, request, *args, **kwargs):
+        student_department_id = request.data.get("department")
+        level_id = request.data.get("level")
+        password = request.data.get("password")
+        if student_department_id is None or level_id is None:
+            return Response(
+                {"message": "Department and level are required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        # Get department and level
+        department = get_object_or_404(Department, id=student_department_id)
+        level = get_object_or_404(department.level.all(), id=level_id)
+
+        file = request.FILES.get("student_file")
+        if file is None:
+            return Response(
+                {"message": "Student File is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Process uploaded student data
+        role_model = Student
+        role_serializer = StudentSerializer
+        role_field_name = "matric_no"
+
+        processor = ProcessCreateStudents(
+            role_model, role_serializer, role_field_name, department, level, password
+        )
+        student_serialized, student_error_response = processor.process_student_data(
+            file
+        )
+
+        if student_error_response:
+            return Response(
+                {
+                    "message": f" Students created successfully.",
+                    "errors": student_error_response,
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        return Response(
+            {
+                "message": f" {len(student_serialized.data)} Students created successfully.",
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+class UploadLecturerView(APIView):
+    permission_classes = (
+        IsAuthenticatedCustom,
+        IsAdminUser,
+    )
+
+    def post(self, request, *args, **kwargs):
+        # lecturer_department_id = request.data.get("department")
+        # level_id = request.data.get("level")
+        password = request.data.get("password")
+        # if lecturer_department_id is None or level_id is None:
+        #     return Response(
+        #         {"message": "Department and level are required."},
+        #         status=status.HTTP_400_BAD_REQUEST,
+        #     )
+        # #  get department
+        # department = get_object_or_404(Department, id=lecturer_department_id)
+
+        # # then we get the levels in that department
+        # level = get_object_or_404(department.levels.all(), id=level_id)
+
+        file = request.FILES.get("lecturer_file")
+        if file is None:
+            return Response(
+                {"message": "lecturer File is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        role_model = Lecturer
+        role_serializer = LecturerSerializer
+        role_field_name = "staff_id"
+        # password = get_random_string(12)
+
+        processor = ProcessCreateLecturer(
+            role_model, role_serializer, role_field_name, password
+        )
+        lecturer_serialized, lecturer_error_response = processor.process_lecturer_data(
+            file
+        )
+        if lecturer_error_response:
+            return Response(
+                {
+                    "message": f"Lecturers created successfully.",
+                    "errors": lecturer_error_response,
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        return Response(
+            {
+                "message": f" {len(lecturer_serialized.data)} Lecturers created successfully.",
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
 class LecturerCreateView(APIView):
     serializer_class = LecturerSerializer
     queryset = Lecturer.objects.all()
@@ -275,50 +382,44 @@ class LecturerCreateView(APIView):
 
     @transaction.atomic()
     def post(self, request, *args, **kwargs):
-        # Call the process_data method to process data from the uploaded file
-        role_model = Lecturer  # or Lecturer, depending on the role model
-        role_serializer = (
-            LecturerSerializer  # or LecturerSerializer, depending on the role
-        )
+        # lecturer_department_id = request.data.get("department")
+        # level_id = request.data.get("level")
+        password = request.data.get("password")
+        # if lecturer_department_id is None or level_id is None:
+        #     return Response(
+        #         {"message": "Department and level are required."},
+        #         status=status.HTTP_400_BAD_REQUEST,
+        #     )
+
+        #  get department
+        # department = get_object_or_404(Department, id=lecturer_department_id)
+
+        # # then we get the levels in that department
+        # level = get_object_or_404(department.levels.all(), id=level_id)
+
+        role_model = Lecturer
+        role_serializer = LecturerSerializer
         role_field_name = "staff_id"
-        processor = ProcessUserRoles(role_model, role_serializer, role_field_name)
-        # we get a file upload
-        if request.FILES:
-            file = request.FILES["lecturer_file"]
-            lecturer_serialized, lecturer_error_response = (
-                processor.process_lecturer_data(file)
-            )
-            if lecturer_error_response:
-                return Response(
-                    {
-                        "message": f" Lecturers created successfully.",
-                        "errors": lecturer_error_response,
-                    },
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            return Response(
-                {
-                    "message": f" {len(lecturer_serialized)} Lecturers created successfully.",
-                },
-                status=status.HTTP_200_OK,
-            )
+        # password = get_random_string(12)
 
-        else:
-            # Call the create_single_user_and_role method to create a single Lecturer user and role
-            lecturer_serialized, lecturer_error_response = (
-                processor.create_single_lecturer_and_role(request.data)
-            )
+        processor = ProcessCreateLecturer(
+            role_model, role_serializer, role_field_name, password
+        )
+        # Call the create_single_user_and_role method to create a single Lecturer user and role
+        lecturer_serialized, lecturer_error_response = (
+            processor.create_single_lecturer_and_role(request.data)
+        )
 
-            if lecturer_error_response:
-                return lecturer_error_response
+        if lecturer_error_response:
+            return lecturer_error_response
 
-            return Response(
-                {
-                    "message": "Lecturer created successfully.",
-                    "data": lecturer_serialized.data,
-                },
-                status=status.HTTP_200_OK,
-            )
+        return Response(
+            {
+                "message": "Lecturer created successfully.",
+                "data": lecturer_serialized.data,
+            },
+            status=status.HTTP_200_OK,
+        )
 
     def get(self, request, *args, **kwargs):
 

@@ -42,9 +42,6 @@ class GetCourseByDepartmentSerializer(serializers.ModelSerializer):
 class DepartmentCoursesSerializer(serializers.ModelSerializer):
     department = serializers.CharField(write_only=True)
     department_name = serializers.SerializerMethodField("get_departemnt")
-    courses = serializers.CharField(read_only=True)
-    level = serializers.CharField(write_only=True)
-    levels = serializers.SerializerMethodField("get_levels")
 
     class Meta:
         model = Course
@@ -57,10 +54,7 @@ class DepartmentCoursesSerializer(serializers.ModelSerializer):
     
     def get_courses(self, obj):
         return [{"course_code": course.course_code, "course_name": course.course_name} for course in obj.courses.all()]
-    
-    def get_levels(self, obj):
-        
-        return obj.level.all().values_list("level", flat=True)
+
 
 
 class GetCourseByLevelSerializer(serializers.ModelSerializer):
@@ -74,10 +68,23 @@ class GetCourseByLevelSerializer(serializers.ModelSerializer):
 
 
 class CourseRegistarionSerializer(serializers.ModelSerializer):
+    student = serializers.SerializerMethodField("get_student")
+    courses = serializers.SerializerMethodField("get_course")
+    semester = serializers.SerializerMethodField("get_semester")
     class Meta:
         model = CourseRegistration
         fields = "__all__"
 
+    
+    def get_student(self, obj):
+        # return str(obj.student).capitalize()
+        return str(obj.student)
+    
+    def get_course(self, obj):
+        return obj.courses.all().values_list("course_name", flat=True)
+    
+    def get_semester(self, obj):
+        return str(obj.semester)
 
 class CourseResponseSerializer(serializers.ModelSerializer):
     course_level_name = serializers.StringRelatedField(source='course_level.level')

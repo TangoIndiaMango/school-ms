@@ -2,6 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from courses.views import (
+    ApprovedRegCourses,
     CreateCourseView,
     DepartmentCourses,
     DepartmentLevelCourses,
@@ -10,6 +11,7 @@ from courses.views import (
     LevelCourses,
     RegisterCourseView,
     SingleDepartmentCourses,
+    UploadCourseView,
     UploadDepartmentCourses,
 )
 
@@ -21,6 +23,7 @@ router.register("department", DepartmentCourses, basename="course-by-dept")
 router.register("departments", SingleDepartmentCourses, basename="dept-courses")
 router.register("level/department", DepartmentLevelCourses, basename="course-by-level")
 router.register("level", LevelCourses, basename="course-by-level")
+router.register("approve-course", ApprovedRegCourses, basename="approve-reg-courses")
 
 
 # Student
@@ -39,5 +42,10 @@ urlpatterns = [
         "courses/department/file",
         UploadDepartmentCourses.as_view(),
         name="upload-department-courses",
+    ),
+    path(
+        "upload/courses",
+        UploadCourseView.as_view(),
+        name="upload-courses",
     ),
 ]

@@ -241,7 +241,7 @@ class ProcessDepartmentCourse:
 
         for row in reader:
             course_name = row.get("course_name", None)
-            level = row.get("level", None)
+            # level = row.get("level", None)
 
             if not course_name:
                 errors.append({"error": "Course name is missing."})
@@ -249,7 +249,7 @@ class ProcessDepartmentCourse:
 
             try:
                 course_obj = Course.objects.get(course_name=course_name)
-                level_obj= Level.objects.get(level=level)
+                # level_obj= Level.objects.get(level=level)
 
                 department_obj = Department.objects.get(id=self.department_id)
 
@@ -274,10 +274,7 @@ class ProcessDepartmentCourse:
                 status=status.HTTP_400_BAD_REQUEST,
             )
         else:
-            department_course_counts = {
-                department.name: department.courses.count() for department in Department.objects.all()
-            }
             return Response(
-                {"message": f"{department_course_counts} Data processed successfully."},
+                {"message": f"{department_obj.courses.count()} courses added to {department_obj.name} department. Data processed successfully."},
                 status=status.HTTP_200_OK,
             )
