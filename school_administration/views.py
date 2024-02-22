@@ -274,12 +274,18 @@ class GetStudentsInDepartement(APIView):
         department_id = kwargs.get("department_id")
         try:
             department = Department.objects.get(id=department_id)
+            if not department:
+                return Response(
+                    {"message": f"Department with id {department_id} does not exist"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
             students = department.students.all()
             if not students:
                 return Response(
                     {"message": f"No students found in {department.name}"},
                     status=status.HTTP_404_NOT_FOUND,
                 )
+            
             serializer = StudentDepartmentSerializer(students, many=True)
             return Response(
                 {"message": f"Students in {department.name}", "data": serializer.data},
